@@ -1,0 +1,1073 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AutoItX3.Assembly</name>
+    </assembly>
+    <members>
+        <member name="T:AutoIt.AutoItX_DLLImport">
+            <summary>
+            The AutoItX DLL wrapper class for the native AutoItX3.dll.
+            </summary>
+        </member>
+        <member name="T:AutoIt.AutoItX">
+            <summary>
+            The AutoItX DLL wrapper class for the native AutoItX3.dll.
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.INTDEFAULT">
+            <summary>
+            Default value for _some_ int parameters (largest negative number).
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_HIDE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWNORMAL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_NORMAL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWMINIMIZED">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWMAXIMIZED">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_MAXIMIZE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWNOACTIVATE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOW">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_MINIMIZE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWMINNOACTIVE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWNA">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_RESTORE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_SHOWDEFAULT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:AutoIt.AutoItX.SW_FORCEMINIMIZE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:AutoIt.AutoItX.Init">
+            <summary>
+            Checks if currently running in 64bit.
+            </summary>
+        </member>
+        <member name="M:AutoIt.AutoItX.ErrorCode">
+            <summary>
+            Returns the last error code.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.AutoItSetOption(System.String,System.Int32)">
+            <summary>
+            Changes the operation of various AutoIt functions/parameters.
+            </summary>
+            <param name="option"></param>
+            <param name="optionValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ClipGet(System.Int32)">
+            <summary>
+            Changes the operation of various AutoIt functions/parameters.
+            </summary>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ClipPut(System.String)">
+            <summary>
+            Changes the operation of various AutoIt functions/parameters.
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlClick(System.String,System.String,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="button"></param>
+            <param name="numClicks"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlClick(System.IntPtr,System.IntPtr,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Changes the operation of various AutoIt functions/parameters.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="button"></param>
+            <param name="numClicks"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlCommand(System.String,System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a command to a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="command"></param>
+            <param name="extra"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlCommand(System.IntPtr,System.IntPtr,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a command to a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="command"></param>
+            <param name="extra"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlListView(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a command to a ListView32 control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="command"></param>
+            <param name="extra1"></param>
+            <param name="extra2"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlListView(System.IntPtr,System.IntPtr,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a command to a ListView32 control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="command"></param>
+            <param name="extra1"></param>
+            <param name="extra2"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlDisable(System.String,System.String,System.String)">
+            <summary>
+            Disables or "grays-out" a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlDisable(System.IntPtr,System.IntPtr)">
+            <summary>
+            Disables or "grays-out" a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlEnable(System.String,System.String,System.String)">
+            <summary>
+            Enables a "grayed-out" control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlEnable(System.IntPtr,System.IntPtr)">
+            <summary>
+            Enables a "grayed-out" control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlFocus(System.String,System.String,System.String)">
+            <summary>
+            Sets input focus to a given control on a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlFocus(System.IntPtr,System.IntPtr)">
+            <summary>
+            Sets input focus to a given control on a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetFocus(System.String,System.String,System.Int32)">
+            <summary>
+            Returns the ControlRef# of the control that has keyboard focus within a specified window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetFocus(System.IntPtr,System.Int32)">
+            <summary>
+            Returns the ControlRef# of the control that has keyboard focus within a specified window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetHandle(System.IntPtr,System.String)">
+            <summary>
+            Retrieves the internal handle of a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetHandleAsText(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves the internal handle of a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetPos(System.String,System.String,System.String)">
+            <summary>
+            Retrieves the position and size of a control relative to it's window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetPos(System.IntPtr,System.IntPtr)">
+            <summary>
+            Retrieves the position and size of a control relative to it's window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetText(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves text from a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlGetText(System.IntPtr,System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves text from a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlHide(System.String,System.String,System.String)">
+            <summary>
+            Hides a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlHide(System.IntPtr,System.IntPtr)">
+            <summary>
+            Hides a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlMove(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves a control within a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlMove(System.IntPtr,System.IntPtr,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves a control within a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlSend(System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a string of characters to a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="sendText"></param>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlSend(System.IntPtr,System.IntPtr,System.String,System.Int32)">
+            <summary>
+            Sends a string of characters to a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="sendText"></param>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlSetText(System.String,System.String,System.String,System.String)">
+            <summary>
+            Sets text of a control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="controlText"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlSetText(System.IntPtr,System.IntPtr,System.String)">
+            <summary>
+            Sets text of a control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="controlText"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlShow(System.String,System.String,System.String)">
+            <summary>
+            Shows a control that was hidden.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlShow(System.IntPtr,System.IntPtr)">
+            <summary>
+            Shows a control that was hidden.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlTreeView(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a command to a TreeView32 control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="control">The control to search for.</param>
+            <param name="command"></param>
+            <param name="extra1"></param>
+            <param name="extra2"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ControlTreeView(System.IntPtr,System.IntPtr,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Sends a command to a TreeView32 control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="controlHandle">The control handle to search for.</param>
+            <param name="command"></param>
+            <param name="extra1"></param>
+            <param name="extra2"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.DriveMapAdd(System.String,System.String,System.Int32,System.String,System.String)">
+            <summary>
+            Maps a network drive.
+            </summary>
+            <param name="device"></param>
+            <param name="share"></param>
+            <param name="flags"></param>
+            <param name="user"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.DriveMapDel(System.String)">
+            <summary>
+            Disconnects a network drive.
+            </summary>
+            <param name="device"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.DriveMapGet(System.String)">
+            <summary>
+            Retreives the details of a mapped drive.
+            </summary>
+            <param name="device"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.IsAdmin">
+            <summary>
+            Checks if the current user has administrator privileges.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseClick(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Perform a mouse click operation.
+            </summary>
+            <param name="button"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="numClicks"></param>
+            <param name="speed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseClickDrag(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Perform a mouse click and drag operation.
+            </summary>
+            <param name="button"></param>
+            <param name="x1"></param>
+            <param name="y1"></param>
+            <param name="x2"></param>
+            <param name="y2"></param>
+            <param name="speed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseDown(System.String)">
+            <summary>
+            Perform a mouse down event at the current mouse position.
+            </summary>
+            <param name="button"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseGetCursor">
+            <summary>
+            Returns a cursor ID Number of the current Mouse Cursor.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseGetPos">
+            <summary>
+            Retrieves the current position of the mouse cursor.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseMove(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves the mouse pointer.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="speed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseUp(System.String)">
+            <summary>
+            Perform a mouse up event at the current mouse position.
+            </summary>
+            <param name="button"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.MouseWheel(System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="direction"></param>
+            <param name="numClicks"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.PixelChecksum(System.Drawing.Rectangle,System.Int32)">
+            <summary>
+            Moves the mouse wheel up or down.
+            </summary>
+            <param name="rect"></param>
+            <param name="step"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.PixelGetColor(System.Int32,System.Int32)">
+            <summary>
+            Returns a pixel color according to x,y pixel coordinates.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.PixelSearch(System.Drawing.Rectangle,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Searches a rectangle of pixels for the pixel color provided.
+            </summary>
+            <param name="rect"></param>
+            <param name="color"></param>
+            <param name="shade"></param>
+            <param name="step"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ProcessClose(System.String)">
+            <summary>
+            Terminates a named process.
+            </summary>
+            <param name="process"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ProcessExists(System.String)">
+            <summary>
+            Checks to see if a specified process exists.
+            </summary>
+            <param name="process"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ProcessSetPriority(System.String,System.Int32)">
+            <summary>
+            Changes the priority of a process.
+            </summary>
+            <param name="process"></param>
+            <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ProcessWait(System.String,System.Int32)">
+            <summary>
+            Pauses script execution until a given process exists.
+            </summary>
+            <param name="process"></param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ProcessWaitClose(System.String,System.Int32)">
+            <summary>
+            Pauses script execution until a given process does not exist.
+            </summary>
+            <param name="process"></param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.Run(System.String,System.String,System.Int32)">
+            <summary>
+            Runs an external program.
+            </summary>
+            <param name="program">The program to run.</param>
+            <param name="dir">The working directory to use.</param>
+            <param name="showFlag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.RunAs(System.String,System.String,System.String,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            Runs an external program as a specified user.
+            </summary>
+            <param name="user"></param>
+            <param name="domain"></param>
+            <param name="password"></param>
+            <param name="logonFlag"></param>
+            <param name="program">The program to run.</param>
+            <param name="dir">The working directory to use.</param>
+            <param name="showFlag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.RunAsWait(System.String,System.String,System.String,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            Runs an external program as a specified user and wait for it to close.
+            </summary>
+            <param name="user"></param>
+            <param name="domain"></param>
+            <param name="password"></param>
+            <param name="logonFlag"></param>
+            <param name="program">The program to run.</param>
+            <param name="dir">The working directory to use.</param>
+            <param name="showFlag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.RunWait(System.String,System.String,System.Int32)">
+            <summary>
+            Runs an external program and wait for it to close.
+            </summary>
+            <param name="program">The program to run.</param>
+            <param name="dir">The working directory to use.</param>
+            <param name="showFlag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.Send(System.String,System.Int32)">
+            <summary>
+            Sends simulated keystrokes to the active window.
+            </summary>
+            <param name="sendText"></param>
+            <param name="mode"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.Shutdown(System.Int32)">
+            <summary>
+            Shut down the system.
+            </summary>
+            <param name="flag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.Sleep(System.Int32)">
+            <summary>
+            Pause for specified number of milliseconds.
+            </summary>
+            <param name="milliseconds"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.StatusBarGetText(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Retrieves the text from a standard status bar control.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="part"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.StatusBarGetText(System.IntPtr,System.Int32,System.Int32)">
+            <summary>
+            Retrieves the text from a standard status bar control.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="part"></param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.ToolTip(System.String,System.Int32,System.Int32)">
+            <summary>
+            Retrieves the text from a standard status bar control.
+            </summary>
+            <param name="tip"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinActivate(System.String,System.String)">
+            <summary>
+            Activates (gives focus to) a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinActivate(System.IntPtr)">
+            <summary>
+            Activates (gives focus to) a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinActive(System.String,System.String)">
+            <summary>
+            Checks to see if a specified window exists and is currently active.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinActive(System.IntPtr)">
+            <summary>
+            Checks to see if a specified window exists and is currently active.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinExists(System.String,System.String)">
+            <summary>
+            Checks to see if a specified window exists.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinExists(System.IntPtr)">
+            <summary>
+            Checks to see if a specified window exists.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinClose(System.String,System.String)">
+            <summary>
+            Closes a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinClose(System.IntPtr)">
+            <summary>
+            Closes a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetCaretPos">
+            <summary>
+            Returns the coordinates of the caret in the foreground window.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetClassList(System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves the classes from a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetClassList(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves the classes from a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetClientSize(System.String,System.String)">
+            <summary>
+            Retrieves the size of a given window's client area.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetClientSize(System.IntPtr)">
+            <summary>
+            Retrieves the size of a given window's client area.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetHandle(System.String,System.String)">
+            <summary>
+            Retrieves the internal handle of a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetHandleAsText(System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves the internal handle of a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetPos(System.String,System.String)">
+            <summary>
+            Retrieves the position and size of a given window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetPos(System.IntPtr)">
+            <summary>
+            Retrieves the position and size of a given window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetProcess(System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves the Process ID (PID) associated with a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetProcess(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves the Process ID (PID) associated with a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetState(System.String,System.String)">
+            <summary>
+            Retrieves the state of a given window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetState(System.IntPtr)">
+            <summary>
+            Retrieves the state of a given window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetText(System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves the text from a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetText(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves the text from a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetTitle(System.String,System.String,System.Int32)">
+            <summary>
+            Retrieves the full title from a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinGetTitle(System.IntPtr,System.Int32)">
+            <summary>
+            Retrieves the full title from a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="maxLen">The maximum number of characters to return.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinKill(System.String,System.String)">
+            <summary>
+            Forces a window to close.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinKill(System.IntPtr)">
+            <summary>
+            Forces a window to close.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinMinimizeAll">
+            <summary>
+            Minimizes all windows.
+            </summary>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinMinimizeAllUndo">
+            <summary>
+            Undoes a previous WinMinimizeAll function.
+            </summary>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinMove(System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves and/or resizes a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinMove(System.IntPtr,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Moves and/or resizes a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetOnTop(System.String,System.String,System.Int32)">
+            <summary>
+            Change a window's "Always On Top" attribute.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="flag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetOnTop(System.IntPtr,System.Int32)">
+            <summary>
+            Change a window's "Always On Top" attribute.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="flag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetState(System.String,System.String,System.Int32)">
+            <summary>
+            Shows, hides, minimizes, maximizes, or restores a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="flags"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetState(System.IntPtr,System.Int32)">
+            <summary>
+            Shows, hides, minimizes, maximizes, or restores a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="flags"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetTitle(System.String,System.String,System.String)">
+            <summary>
+            Changes the title of a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="newTitle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetTitle(System.IntPtr,System.String)">
+            <summary>
+            Changes the title of a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="newTitle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetTrans(System.String,System.String,System.Int32)">
+            <summary>
+            Sets the transparency of a window.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="trans"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinSetTrans(System.IntPtr,System.Int32)">
+            <summary>
+            Sets the transparency of a window.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="trans"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWait(System.String,System.String,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window exists.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWait(System.IntPtr,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window exists.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWaitActive(System.String,System.String,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window is active.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWaitActive(System.IntPtr,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window is active.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWaitClose(System.String,System.String,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window does not exist.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWaitClose(System.IntPtr,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window does not exist.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWaitNotActive(System.String,System.String,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window is not active.
+            </summary>
+            <param name="title">The window title to search for.</param>
+            <param name="text">The window text to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoIt.AutoItX.WinWaitNotActive(System.IntPtr,System.Int32)">
+            <summary>
+            Pauses execution of the script until the requested window is not active.
+            </summary>
+            <param name="winHandle">The window handle to search for.</param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

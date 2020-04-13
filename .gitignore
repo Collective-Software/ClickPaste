@@ -1,0 +1,4 @@
+/obj
+/bin/Debug
+/bin/Release/*.pdb
+/.vs
