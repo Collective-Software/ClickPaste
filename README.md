@@ -29,3 +29,7 @@ First of course, you need to have some text in your clipboard.  Then:
 * Right-click the notification icon and select Exit.
 
  ![How to exit](./doc/RightClickToExit.png)
+ 
+## Download 
+
+* [Go to Releases page](/releases)
