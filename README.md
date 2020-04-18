@@ -32,4 +32,4 @@ First of course, you need to have some text in your clipboard.  Then:
  
 ## Download 
 
-* [Go to Releases page](/releases)
+* [Go to Releases page](../../releases/latest)
