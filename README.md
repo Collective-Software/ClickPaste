@@ -13,7 +13,9 @@ Forked from Collective-Software to be easier to use with remote applications.
 
 First of course, you need to have some text in your clipboard.  Then: 
 
-0. Choose where you would like to send the keystrokes and press the pause key.
+Choose where you would like to send the keystrokes and press the pause key. 
+
+OR...
 
 1. Click the target notification icon to begin:
 
