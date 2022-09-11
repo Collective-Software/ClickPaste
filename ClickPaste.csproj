@@ -41,6 +41,9 @@
   <PropertyGroup>
     <ApplicationIcon>Resources\TargetDark.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoItX3.Assembly">
       <HintPath>..\..\..\..\Program Files (x86)\AutoIt3\AutoItX\AutoItX3.Assembly.dll</HintPath>
@@ -118,6 +121,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\sign.bat $(TargetDir)\$(TargetFileName) $(TargetPath)</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Release $(SolutionDir)\sign.bat $(TargetDir)\$(TargetFileName) $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
 </Project>

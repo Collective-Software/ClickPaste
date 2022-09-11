@@ -128,8 +128,18 @@ namespace ClickPaste
                     Native.SetSystemCursor(Native.CopyIcon(Native.LoadCursor(IntPtr.Zero, (int)Native.CROSS)), Cursors[i]);
                 _hook = Hook.GlobalEvents();
                 _hook.MouseUp += _hook_MouseUp;
+                _hook.KeyDown += _hook_KeyDown;
             }
         }
+
+        private void _hook_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Escape)
+            {
+                EndTrack();
+            }
+        }
+
         void EndTrack()
         {
             if (_hook != null)

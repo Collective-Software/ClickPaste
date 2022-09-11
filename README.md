@@ -3,7 +3,7 @@ Windows 10 notification area app in C# that can paste clipboard contents as keys
 
 ## Starting
 
-* Launch ClickToPaste.exe, or put it in your Startup folder.
+* Launch ClickPaste.exe, or put it in your Startup folder.
 * If you intend to paste onto windows of UAC-elevated processes, you need ClickPaste.exe to be running UAC-elevated as well.  You can do this by making a shortcut and setting its properties to "Run as Administrator"
 
  ![How to run as administrator](./doc/RunAsAdmin.png)
