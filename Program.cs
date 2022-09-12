@@ -183,6 +183,7 @@ namespace ClickPaste
             if (_hook != null)
             {
                 _hook.MouseUp -= _hook_MouseUp;
+                _hook.KeyDown -= _hook_KeyDown;
                 _hook.Dispose();
                 _hook = null;
                 Native.SystemParametersInfo(0x0057, 0, null, 0);
