@@ -6,6 +6,7 @@ using System.Linq;
 using System.Media;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -57,18 +58,30 @@ namespace ClickPaste
     public static class Extensions
     {
         public static uint? RegToUint(this object value) => value == null ? (uint?)null : Convert.ToUInt32(value);
+        public static string[] Names(this Type enumType) => Enum.GetNames(enumType);
+        public static int Count(this Type enumType) => enumType.Names().Length;
+        public static object Value(this Type enumType, string name) => Enum.Parse(enumType, name);
     }
     public enum TypeMethod
     {
         Forms_SendKeys = 0,
-        AutoIt_Send,
-        Length
+        AutoIt_Send
     }
+    public enum KeyDelays
+    {
+        Five_ms = 5,
+        Ten_ms = 10,
+        Twenty_ms = 20,
+        Thirty_ms = 30,
+        Forty_ms = 40
+    }
+
     public class TrayApplicationContext : ApplicationContext
     {
         NotifyIcon _notify = null;
         IKeyboardMouseEvents _hook = null;
-        MenuItem[] _typeMethods;
+        MenuItem[] _typeMethods; // these are just sequential 0-based integers so don't need to map them like...
+        Dictionary<int, MenuItem> _keyDelayMS;// we do here
         public TrayApplicationContext()
         {
             bool darkTray = true;
@@ -82,14 +95,28 @@ namespace ClickPaste
             }
             var traySize = SystemInformation.SmallIconSize;
 
-            _typeMethods = new MenuItem[(int)TypeMethod.Length];
-            for(int i = 0; i < (int)TypeMethod.Length; i++)
+            _typeMethods = new MenuItem[typeof(TypeMethod).Count()];
+            ushort i = 0;
+            foreach(var name in typeof(TypeMethod).Names())
             {
-                _typeMethods[i] = new MenuItem(((TypeMethod)i).ToString(), ChangeTypeMethod);
+                _typeMethods[i] = new MenuItem(name.Replace('_',' '), ChangeTypeMethod);
                 _typeMethods[i].RadioCheck = true;
-                _typeMethods[i].Tag = i;
+                _typeMethods[i].Tag = typeof(TypeMethod).Value(name);
+                i++;
             };
             _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
+
+            _keyDelayMS = new Dictionary<int, MenuItem>();
+            foreach(var name in typeof(KeyDelays).Names())
+            {
+                var kd = new MenuItem(name.Replace('_', ' '), ChangeKeyDelayMethod);
+                kd.RadioCheck = true;
+                var val = (int)typeof(KeyDelays).Value(name);
+                kd.Tag = val;
+                _keyDelayMS[val] = kd;
+            }
+            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
+
             _notify = new NotifyIcon
             {
                 Icon = new System.Drawing.Icon(darkTray ? Properties.Resources.Target : Properties.Resources.TargetDark, traySize.Width, traySize.Height),
@@ -99,6 +126,7 @@ namespace ClickPaste
                     new MenuItem[] 
                     {
                         new MenuItem("Typing method", _typeMethods),
+                        new MenuItem("Delay between keys", _keyDelayMS.Values.ToArray()),
                         new MenuItem("-"),
                         new MenuItem("Exit", Exit),
                     }
@@ -117,6 +145,16 @@ namespace ClickPaste
                 item.Checked = false;
             }
             _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
+        }
+        private void ChangeKeyDelayMethod(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.KeyDelayMS = (int)((sender as MenuItem).Tag);
+            Properties.Settings.Default.Save();
+            foreach(var item in _keyDelayMS.Values)
+            {
+                item.Checked = false;
+            }
+            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
         }
         void StartTrack()
         {
@@ -184,17 +222,23 @@ namespace ClickPaste
                         }
                         else
                         {
-                            Task.Delay(100);
+                            Thread.Sleep(100);
                             // left click has selected the thing we want to paste, and placed the cursor
                             // so all we have to do is type
-
+                            int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
                             switch((TypeMethod) Properties.Settings.Default.TypeMethod)
                             {
                                 case TypeMethod.AutoIt_Send:
+                                    AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", keyDelayMS);
                                     AutoIt.AutoItX.Send(clip, 1);
                                     break;
                                 case TypeMethod.Forms_SendKeys:
-                                    SendKeys.SendWait(EscapeSendKeys(clip));
+                                    var list = ProcessSendKeys(clip);
+                                    foreach(var s in list)
+                                    {
+                                        SendKeys.SendWait(s);
+                                        Thread.Sleep(keyDelayMS);
+                                    }
                                     break;
                             }
                         }
@@ -202,28 +246,22 @@ namespace ClickPaste
                     break;
             }
         }
-        string EscapeSendKeys(string raw)
+        IList<string> ProcessSendKeys(string raw)
         {
-            string escaped = "";
-            string remaining = raw;
-            var specials = new char[]{ '{', '}', '[', ']', '+', '^', '%', '~', '(', ')' };
-            while (remaining.Length > 0)
+            var list = new List<string>();
+            var specials = @"{}[]+^%~()";
+            foreach(char c in raw)
             {
-                var idx = remaining.IndexOfAny(specials);
-                if (-1 != idx)
+                if(-1 != specials.IndexOf(c))
                 {
-                    escaped += remaining.Substring(0, idx);
-                    var special = remaining.Substring(idx, 1);
-                    escaped += "{" + special + "}";
-                    remaining = remaining.Substring(idx + 1);
+                    list.Add("{" + c.ToString() + "}");
                 }
                 else
                 {
-                    escaped += remaining;
-                    remaining = "";
+                    list.Add(c.ToString());
                 }
             }
-            return escaped;
+            return list;
         }
 
         void Exit(object sender, EventArgs e)
