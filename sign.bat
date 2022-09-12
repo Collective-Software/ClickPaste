@@ -24,7 +24,7 @@ ping -n 2 127.0.0.1>nul
 :try
 set /A tries=%tries%-1
 rem signtool sign /n "Collective Software" /i GlobalSign /t "http://timestamp.globalsign.com/scripts/timstamp.dll" /v %1 %2 1>>sign.out 2>>&1
-signtool sign /n "Collective Software" /a /i GlobalSign /t "http://timestamp.globalsign.com/scripts/timstamp.dll" /v %1 %2 1>>sign.out 2>>&1
+signtool sign /n "Collective Software" /a /i GlobalSign /tr "http://timestamp.globalsign.com/tsa/r6advanced1" /td SHA256 /v %1 %2 1>>sign.out 2>>&1
 if ERRORLEVEL 1 goto :retry
 del sign.out >nul
 echo Signed %1 %2 OK.
