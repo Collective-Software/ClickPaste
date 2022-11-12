@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLLOCATION" Name="ClickPaste">
+					<Merge Id="ClickPasteInstallerMM" SourceFile="$(var.ClickPasteInstallerMM.TargetPath)" DiskId="1" Language="1033" />
+				</Directory>
+			</Directory>
+		</Directory>
+		<Feature Id="ClickPaste" Title="ClickPaste" Description="Installs all the files needed for ClickPaste" Level="1" AllowAdvertise="no" ConfigurableDirectory="INSTALLLOCATION" Display="expand">
+			<MergeRef Id="ClickPasteInstallerMM" />
+			<Feature Id="AutoStart" Description="Autostart After Logon" Title="AutoStart">
+				<ComponentRef Id="AutoStart" />
+			</Feature>
+		</Feature>
+	</Fragment>
+</Wix>
