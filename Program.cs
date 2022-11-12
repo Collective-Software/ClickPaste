@@ -73,7 +73,9 @@ namespace ClickPaste
         Ten_ms = 10,
         Twenty_ms = 20,
         Thirty_ms = 30,
-        Forty_ms = 40
+        Forty_ms = 40,
+        OneHundred_ms = 100,
+        TwoHundredFifty_ms = 250
     }
 
     public class TrayApplicationContext : ApplicationContext
@@ -104,7 +106,8 @@ namespace ClickPaste
                 _typeMethods[i].Tag = typeof(TypeMethod).Value(name);
                 i++;
             };
-            _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
+            if (_typeMethods.Length>=Properties.Settings.Default.TypeMethod)
+                _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
 
             _keyDelayMS = new Dictionary<int, MenuItem>();
             foreach(var name in typeof(KeyDelays).Names())
@@ -115,7 +118,8 @@ namespace ClickPaste
                 kd.Tag = val;
                 _keyDelayMS[val] = kd;
             }
-            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
+            if (_keyDelayMS.ContainsKey(Properties.Settings.Default.KeyDelayMS))
+                _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
 
             _notify = new NotifyIcon
             {
