@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define ComponentRules="OneToOne"?>
+	<?define SourceDir="..\Deploy"?>
+	<Module Id="ClickPasteInstallerMM" Language="1033" Version="1.0.1.0">
+		<Package Id="3f10c7aa-46cd-48a4-9f1f-18ecaee4f601" Manufacturer="Collective-Software" InstallerVersion="200" InstallPrivileges="elevated" Description="ClickPaste" />
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="MergeRedirectFolder">
+				<Component Id="owc83137D70C86C3754C466C3E295B3A270" Guid="93faf6dd-2334-9646-6b69-c590ac418803">
+					<File Id="owf83137D70C86C3754C466C3E295B3A270" Source="$(var.SourceDir)\AutoIt_License.html" KeyPath="yes" />
+				</Component>
+				<Component Id="owcC009D9DDFA2DF5394855E533D71AD255" Guid="abe8b1ca-8e58-73e9-d95d-6d601e4e2c0e">
+					<File Id="owfC009D9DDFA2DF5394855E533D71AD255" Source="$(var.SourceDir)\AutoItX3.Assembly.dll" KeyPath="yes" />
+				</Component>
+				<Component Id="owc5EA76EAA698D2DE193EC8AB0491EB954" Guid="76bbf0ba-b7b3-bd5c-730b-f224f3b69f66">
+					<File Id="owf5EA76EAA698D2DE193EC8AB0491EB954" Source="$(var.SourceDir)\AutoItX3.Assembly.xml" KeyPath="yes" />
+				</Component>
+				<Component Id="owcF6EBED5AF2EC649E5EB85682F9CF5F96" Guid="154c3587-7624-718c-ecb4-ba5ffefdca74">
+					<File Id="owfF6EBED5AF2EC649E5EB85682F9CF5F96" Source="$(var.SourceDir)\AutoItX3.dll" KeyPath="yes" />
+				</Component>
+				<Component Id="owc8CC7902D56AA001A7C1C8FE6A88020E5" Guid="c7056c3e-24b2-6beb-702a-4eb1c48b75ae">
+					<File Id="owf8CC7902D56AA001A7C1C8FE6A88020E5" Source="$(var.SourceDir)\AutoItX3_x64.dll" KeyPath="yes" />
+				</Component>
+				<Component Id="owc0EB9820B5E5026A0BC160A00AB557162" Guid="9fa4522a-bff0-e255-c8bb-f99125a4955b">
+					<File Id="owf0EB9820B5E5026A0BC160A00AB557162" Source="$(var.SourceDir)\ClickPaste.exe" KeyPath="yes">
+						<Shortcut Id="scC506135B324F4E822AAD47B4849EC487" Name="ClickPaste" Directory="scdDF1638A5CF86A654A0ACCF5E541A010E" />
+					</File>
+				</Component>
+				<Component Id="owcE635EF603952C11F18620489F7703A5F" Guid="d252a802-af1a-aeab-9e7c-4c3c6b698764">
+					<File Id="owfE635EF603952C11F18620489F7703A5F" Source="$(var.SourceDir)\ClickPaste.exe.config" KeyPath="yes" />
+				</Component>
+				<!--
+        <Component Id="owcF7FC05E062ADD9988E3401EE50F780C8" Guid="2ca16654-d692-103f-1f78-e0ac10b01bb0">
+          <File Id="owfF7FC05E062ADD9988E3401EE50F780C8" Source="$(var.SourceDir)\ClickPaste.pdb" KeyPath="yes" />
+        </Component>
+		-->
+        <Component Id="owcF58A3735A9775994E75D7F046A16F0B1" Guid="49ba1a40-b229-b7d8-de45-0fd5ef7f6637">
+          <File Id="owfF58A3735A9775994E75D7F046A16F0B1" Source="$(var.SourceDir)\Gma.System.MouseKeyHook.dll" KeyPath="yes" />
+        </Component>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="scdDF1638A5CF86A654A0ACCF5E541A010E" Name="ClickPaste" />
+      </Directory>
+    </Directory>
+  </Module>
+</Wix>

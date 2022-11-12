@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<!-- 
+  The Product@Id attribute (ProductCode Property) will be a random GUID for each build.  This is to support "Major Upgrades" where each install 
+  is a seamless uninstall/reinstall.
+  -->
+	<Product Id="*" Name="ClickPaste" Language="1033" Version="1.0.2" Manufacturer="Collective-Software" UpgradeCode="874905ba-a293-4185-a31b-e89476f3bbc8">
+		<Package InstallerVersion="301" Compressed="yes" InstallScope="perMachine" />
+		<MediaTemplate EmbedCab="yes" />
+
+		<!-- Major Upgrade Rule to disallow downgrades -->
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+		<!--Common Launch Condition-->
+		<!-- Examples at http://wixtoolset.org/documentation/manual/v3/customactions/wixnetfxextension.html -->
+		<PropertyRef Id="NETFRAMEWORK40FULL"/>
+		<Condition Message="[ProductName] requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40FULL</Condition>
+
+		<!-- Include User Interface Experience -->
+		<Icon Id="Target.ico" SourceFile="..\..\Resources\Target.ico"/>
+		<Property Id="ARPPRODUCTICON" Value="Target.ico"></Property>
+		<UIRef Id="UI"/>
+
+		<!-- Include Features and Directories Fragment -->
+		<DirectoryRef Id="INSTALLLOCATION"/>
+
+		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"/>
+		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch ClickPaste now" />
+
+
+		<!-- Step 3: Include the custom action -->
+		<Property Id="WixShellExecTarget" Value="[INSTALLLOCATION]ClickPaste.exe" />
+		<CustomAction Id="LaunchApplication"
+		BinaryKey="WixCA"
+		DllEntry="WixShellExec"
+		Impersonate="yes" />
+	</Product>
+</Wix>

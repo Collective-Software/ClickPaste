@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment Id="AutoStart">
+		<DirectoryRef Id="TARGETDIR">
+			<Component Id="AutoStart">
+				<Shortcut Id="AutoStartSC" Target="[INSTALLLOCATION]ClickPaste.exe" Name="ClickPaste" Directory="StartupFolder" />
+				<RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]\installs' Name="autostart" Type='string' Value='' KeyPath='yes' />
+			</Component>
+			<Directory Id="StartupFolder" />
+		</DirectoryRef>
+	</Fragment>
+</Wix>
