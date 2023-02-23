@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Media;
 using System.Reflection;
@@ -84,6 +85,10 @@ namespace ClickPaste
         Dictionary<int, MenuItem> _keyDelayMS;// we do here
         public TrayApplicationContext()
         {
+            Keys HotKey = (Keys)Enum.Parse(typeof(Keys), ConfigurationManager.AppSettings["HotKey"]);
+            KeyModifiers HotKeyModifer = (KeyModifiers)Int32.Parse(ConfigurationManager.AppSettings["HotKeyModifer"]);
+            HotKeyManager.RegisterHotKey(HotKey, HotKeyModifer);
+            HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
             bool darkTray = true;
             using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
             {
@@ -135,7 +140,10 @@ namespace ClickPaste
             };
             _notify.MouseDown += _notify_MouseDown;
         }
-
+        private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
+        {
+            StartTrack();
+        }
         private void ChangeTypeMethod(object sender, EventArgs e)
         {
             Properties.Settings.Default.TypeMethod = (int)((sender as MenuItem).Tag);
