@@ -11,5 +11,11 @@
     <Setting Name="KeyDelayMS" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
+    <Setting Name="HotKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">V</Value>
+    </Setting>
+    <Setting Name="HotKeyModifier" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -58,5 +58,29 @@ namespace ClickPaste.Properties {
                 this["KeyDelayMS"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("V")]
+        public string HotKey {
+            get {
+                return ((string)(this["HotKey"]));
+            }
+            set {
+                this["HotKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int HotKeyModifier {
+            get {
+                return ((int)(this["HotKeyModifier"]));
+            }
+            set {
+                this["HotKeyModifier"] = value;
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Media;
 using System.Reflection;
@@ -68,14 +67,6 @@ namespace ClickPaste
         Forms_SendKeys = 0,
         AutoIt_Send
     }
-    public enum KeyDelays
-    {
-        Five_ms = 5,
-        Ten_ms = 10,
-        Twenty_ms = 20,
-        Thirty_ms = 30,
-        Forty_ms = 40
-    }
 
     public class TrayApplicationContext : ApplicationContext
     {
@@ -83,12 +74,11 @@ namespace ClickPaste
         IKeyboardMouseEvents _hook = null;
         MenuItem[] _typeMethods; // these are just sequential 0-based integers so don't need to map them like...
         Dictionary<int, MenuItem> _keyDelayMS;// we do here
+        int? _usingHotKey;
+        bool _settingsOpen = false;
         public TrayApplicationContext()
         {
-            Keys HotKey = (Keys)Enum.Parse(typeof(Keys), ConfigurationManager.AppSettings["HotKey"]);
-            KeyModifiers HotKeyModifer = (KeyModifiers)Int32.Parse(ConfigurationManager.AppSettings["HotKeyModifer"]);
-            HotKeyManager.RegisterHotKey(HotKey, HotKeyModifer);
-            HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+            StartHotKey();
             bool darkTray = true;
             using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
             {
@@ -100,28 +90,6 @@ namespace ClickPaste
             }
             var traySize = SystemInformation.SmallIconSize;
 
-            _typeMethods = new MenuItem[typeof(TypeMethod).Count()];
-            ushort i = 0;
-            foreach(var name in typeof(TypeMethod).Names())
-            {
-                _typeMethods[i] = new MenuItem(name.Replace('_',' '), ChangeTypeMethod);
-                _typeMethods[i].RadioCheck = true;
-                _typeMethods[i].Tag = typeof(TypeMethod).Value(name);
-                i++;
-            };
-            _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
-
-            _keyDelayMS = new Dictionary<int, MenuItem>();
-            foreach(var name in typeof(KeyDelays).Names())
-            {
-                var kd = new MenuItem(name.Replace('_', ' '), ChangeKeyDelayMethod);
-                kd.RadioCheck = true;
-                var val = (int)typeof(KeyDelays).Value(name);
-                kd.Tag = val;
-                _keyDelayMS[val] = kd;
-            }
-            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
-
             _notify = new NotifyIcon
             {
                 Icon = new System.Drawing.Icon(darkTray ? Properties.Resources.Target : Properties.Resources.TargetDark, traySize.Width, traySize.Height),
@@ -130,8 +98,7 @@ namespace ClickPaste
                 new ContextMenu(
                     new MenuItem[] 
                     {
-                        new MenuItem("Typing method", _typeMethods),
-                        new MenuItem("Delay between keys", _keyDelayMS.Values.ToArray()),
+                        new MenuItem("Settings", Settings),
                         new MenuItem("-"),
                         new MenuItem("Exit", Exit),
                     }
@@ -143,26 +110,6 @@ namespace ClickPaste
         private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
         {
             StartTrack();
-        }
-        private void ChangeTypeMethod(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.TypeMethod = (int)((sender as MenuItem).Tag);
-            Properties.Settings.Default.Save();
-            foreach(var item in _typeMethods)
-            {
-                item.Checked = false;
-            }
-            _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
-        }
-        private void ChangeKeyDelayMethod(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.KeyDelayMS = (int)((sender as MenuItem).Tag);
-            Properties.Settings.Default.Save();
-            foreach(var item in _keyDelayMS.Values)
-            {
-                item.Checked = false;
-            }
-            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
         }
         void StartTrack()
         {
@@ -232,6 +179,8 @@ namespace ClickPaste
                         else
                         {
                             Thread.Sleep(100);
+                            // don't listen to our own typing
+                            StopHotKey();
                             // left click has selected the thing we want to paste, and placed the cursor
                             // so all we have to do is type
                             int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
@@ -250,6 +199,7 @@ namespace ClickPaste
                                     }
                                     break;
                             }
+                            StartHotKey();
                         }
                     });
                     break;
@@ -272,6 +222,43 @@ namespace ClickPaste
             }
             return list;
         }
+        void StartHotKey()
+        {
+            var hotkeyLetter = Properties.Settings.Default.HotKey;
+            if (!string.IsNullOrEmpty(hotkeyLetter))
+            {
+                try
+                {
+                    Keys HotKey = (Keys)Enum.Parse(typeof(Keys), hotkeyLetter);
+                    _usingHotKey = HotKeyManager.RegisterHotKey(HotKey, (KeyModifiers)Properties.Settings.Default.HotKeyModifier);
+                    HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show("Could not register hot key: " + e.Message);
+                }
+            }
+        }
+        void StopHotKey()
+        {
+            if(_usingHotKey.HasValue)
+            {
+                HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
+                HotKeyManager.UnregisterHotKey(_usingHotKey.Value);
+            }
+            _usingHotKey = null;
+        }
+        void Settings(object sender, EventArgs e)
+        {
+            if (!_settingsOpen)
+            {
+                _settingsOpen = true;
+            }
+            StopHotKey();
+            var settings = new SettingsForm();
+            settings.ShowDialog();
+            StartHotKey();            
+        }
 
         void Exit(object sender, EventArgs e)
         {
@@ -279,7 +266,7 @@ namespace ClickPaste
             // Hide tray icon, otherwise it will remain shown until user mouses over it
             _notify.Visible = false;
             _notify.Dispose();
-
+            StopHotKey();
             Application.Exit();
         }
     }
