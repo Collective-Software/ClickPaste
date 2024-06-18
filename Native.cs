@@ -47,8 +47,10 @@ namespace ClickPaste
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
         [DllImport("user32.dll")]
         public static extern int ActivateKeyboardLayout(int HKL, int flags);
+        /*
         private static uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
         private static int HWND_BROADCAST = 0xffff;
         private static uint KLF_ACTIVATE = 1;
+        */
     }
 }

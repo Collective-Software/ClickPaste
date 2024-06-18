@@ -12,7 +12,7 @@ namespace ClickPaste.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,25 +49,49 @@ namespace ClickPaste.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public int KeyDelayMS {
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int KeyDelayBetweenMS {
             get {
-                return ((int)(this["KeyDelayMS"]));
+                return ((int)(this["KeyDelayBetweenMS"]));
             }
             set {
-                this["KeyDelayMS"] = value;
+                this["KeyDelayBetweenMS"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int KeyWaitMS {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HotKey {
             get {
-                return ((int)(this["KeyWaitMS"]));
+                return ((string)(this["HotKey"]));
             }
             set {
-                this["KeyWaitMS"] = value;
+                this["HotKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HotKeyModifier {
+            get {
+                return ((int)(this["HotKeyModifier"]));
+            }
+            set {
+                this["HotKeyModifier"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int KeyDelayBeforeMS {
+            get {
+                return ((int)(this["KeyDelayBeforeMS"]));
+            }
+            set {
+                this["KeyDelayBeforeMS"] = value;
             }
         }
     }

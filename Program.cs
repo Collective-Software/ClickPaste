@@ -2,16 +2,12 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using System.Linq;
 using System.Media;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
 
 namespace ClickPaste
 {
@@ -23,7 +19,7 @@ namespace ClickPaste
         [STAThread]
         static void Main()
         {
-            if(Properties.Settings.Default.RunElevated)
+            if (Properties.Settings.Default.RunElevated)
             {
 
             }
@@ -70,37 +66,20 @@ namespace ClickPaste
         Forms_SendKeys = 0,
         AutoIt_Send
     }
-    public enum KeyDelays
-    {
-        Five_ms = 5,
-        Ten_ms = 10,
-        Twenty_ms = 20,
-        Thirty_ms = 30,
-        Forty_ms = 40
-    }
-
-    public enum KeyWait
-    {
-        One_Hundred_ms = 100,
-        Two_Hundred_Fifty_ms = 250,
-        Five_Hundred_ms = 500,
-        Seven_Hundred_Fifty_ms = 750,
-        One_Thousand_ms = 1000,
-        Two_Thousand_ms = 2000,
-        Four_Thousand_ms = 4000,
-    }
 
     public class TrayApplicationContext : ApplicationContext
     {
+        // added GetAsyncKeyState so we can halt mid paste in _hook_MouseUp method
+        [DllImport("user32.dll")]
+        public static extern bool GetAsyncKeyState(Keys vKey);
+
         NotifyIcon _notify = null;
         IKeyboardMouseEvents _hook = null;
-        MenuItem[] _typeMethods; // these are just sequential 0-based integers so don't need to map them like...
-        Dictionary<int, MenuItem> _keyDelayMS; // Delay between keystrokes
-        Dictionary<int, MenuItem> _keyWaitMS; // Delay before keystrokes are sent
+        int? _usingHotKey;
+        bool _settingsOpen = false;
         public TrayApplicationContext()
         {
-
-            // Use light or dark tray icon depending on system theme
+            StartHotKey();
             bool darkTray = true;
             using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
             {
@@ -112,116 +91,47 @@ namespace ClickPaste
             }
             var traySize = SystemInformation.SmallIconSize;
 
-            // Allow selection of key entry method.
-            _typeMethods = new MenuItem[typeof(TypeMethod).Count()];
-            ushort i = 0;
-            foreach(var name in typeof(TypeMethod).Names())
-            {
-                _typeMethods[i] = new MenuItem(name.Replace('_',' '), ChangeTypeMethod);
-                _typeMethods[i].RadioCheck = true;
-                _typeMethods[i].Tag = typeof(TypeMethod).Value(name);
-                i++;
-            };
-            _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
-
-            // Create Time Delay Menu Items
-            _keyDelayMS = new Dictionary<int, MenuItem>();
-            foreach(var name in typeof(KeyDelays).Names())
-            {
-                var kd = new MenuItem(name.Replace('_', ' '), ChangeKeyDelayMethod);
-                kd.RadioCheck = true;
-                var val = (int)typeof(KeyDelays).Value(name);
-                kd.Tag = val;
-                _keyDelayMS[val] = kd;
-            }
-            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
-
-            // Create Time Wait Menu Items
-            _keyWaitMS = new Dictionary<int, MenuItem>();
-            foreach (var name in typeof(KeyWait).Names())
-            {
-                var kd = new MenuItem(name.Replace('_', ' '), ChangeKeyWaitMethod);
-                kd.RadioCheck = true;
-                var val = (int)typeof(KeyWait).Value(name);
-                kd.Tag = val;
-                _keyWaitMS[val] = kd;
-            }
-            _keyWaitMS[Properties.Settings.Default.KeyWaitMS].Checked = true;
-
             _notify = new NotifyIcon
             {
                 Icon = new System.Drawing.Icon(darkTray ? Properties.Resources.Target : Properties.Resources.TargetDark, traySize.Width, traySize.Height),
                 Visible = true,
-                ContextMenu = 
+                ContextMenu =
                 new ContextMenu(
-                    new MenuItem[] 
+                    new MenuItem[]
                     {
-                        new MenuItem("Typing method", _typeMethods),
-                        new MenuItem("Delay between each key", _keyDelayMS.Values.ToArray()),
-                        new MenuItem("Delay before keys are sent", _keyWaitMS.Values.ToArray()),
+                        new MenuItem("Settings", Settings),
                         new MenuItem("-"),
                         new MenuItem("Exit", Exit),
                     }
                 ),
                 Text = "ClickPaste: Click to choose a target"
-
             };
             _notify.MouseDown += _notify_MouseDown;
-            if (_hook == null) _hook = Hook.GlobalEvents();
-            _hook.KeyDown += _hook_KeyDown;
         }
-
-        private void ChangeTypeMethod(object sender, EventArgs e)
+        private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
         {
-            Properties.Settings.Default.TypeMethod = (int)((sender as MenuItem).Tag);
-            Properties.Settings.Default.Save();
-            foreach(var item in _typeMethods)
-            {
-                item.Checked = false;
-            }
-            _typeMethods[Properties.Settings.Default.TypeMethod].Checked = true;
+            StartTrack();
         }
-        private void ChangeKeyDelayMethod(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.KeyDelayMS = (int)((sender as MenuItem).Tag);
-            Properties.Settings.Default.Save();
-            foreach(var item in _keyDelayMS.Values)
-            {
-                item.Checked = false;
-            }
-            _keyDelayMS[Properties.Settings.Default.KeyDelayMS].Checked = true;
-        }
-        private void ChangeKeyWaitMethod(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.KeyWaitMS = (int)((sender as MenuItem).Tag);
-            Properties.Settings.Default.Save();
-            foreach (var item in _keyWaitMS.Values)
-            {
-                item.Checked = false;
-            }
-            _keyWaitMS[Properties.Settings.Default.KeyWaitMS].Checked = true;
-        }
-
         void StartTrack()
         {
+            if (_hook == null)
+            {
+                uint[] Cursors = { Native.NORMAL, Native.IBEAM, Native.HAND };
 
-            uint[] Cursors = { Native.NORMAL, Native.IBEAM, Native.HAND };
-            for (int i = 0; i < Cursors.Length; i++)
-                Native.SetSystemCursor(Native.CopyIcon(Native.LoadCursor(IntPtr.Zero, (int)Native.CROSS)), Cursors[i]);
-            if (_hook == null) _hook = Hook.GlobalEvents();
-            _hook.MouseUp += _hook_MouseUp;
-            _hook.KeyDown += _hook_KeyDown;
+                for (int i = 0; i < Cursors.Length; i++)
+                    Native.SetSystemCursor(Native.CopyIcon(Native.LoadCursor(IntPtr.Zero, (int)Native.CROSS)), Cursors[i]);
+                _hook = Hook.GlobalEvents();
+                _hook.MouseUp += _hook_MouseUp;
+                _hook.KeyDown += _hook_KeyDown;
+            }
         }
 
         private void _hook_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Pause)
+            if (e.KeyCode == Keys.Escape)
             {
                 EndTrack();
-                StartTrack();
             }
-            if (e.KeyCode == Keys.Escape) EndTrack();
-
         }
 
         void EndTrack()
@@ -234,33 +144,30 @@ namespace ClickPaste
                 _hook = null;
                 Native.SystemParametersInfo(0x0057, 0, null, 0);
             }
-            if (_hook == null) _hook = Hook.GlobalEvents();
-            _hook.KeyDown += _hook_KeyDown;
         }
 
         private void _notify_MouseDown(object sender, MouseEventArgs e)
         {
-            switch(e.Button)
+            switch (e.Button)
 
             {
                 //case MouseButtons.Middle:
                 case MouseButtons.Left: // this is a lie, we only get left after mouse released
-            
+
                     StartTrack();
-                    
+
                     break;
             }
         }
 
         private void _hook_MouseUp(object sender, MouseEventArgs e)
         {
-
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                //case MouseButtons.Middle:
+                    //case MouseButtons.Middle:
                     EndTrack();
-                    var clip = Clipboard.GetText(); 
+                    var clip = Clipboard.GetText();
                     Task.Run(() =>
                     {
                         // check if it's my window
@@ -273,27 +180,38 @@ namespace ClickPaste
                         }
                         else
                         {
-
+                            //break before typing starts
+                            int keyDelayBeforeMS = Properties.Settings.Default.KeyDelayBeforeMS;
+                            Thread.Sleep(keyDelayBeforeMS);
+                            // don't listen to our own typing
+                            StopHotKey();
                             // left click has selected the thing we want to paste, and placed the cursor
                             // so all we have to do is type
-                            int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
-                            int keyWaitMS = Properties.Settings.Default.KeyWaitMS;
-                            Thread.Sleep(keyWaitMS);
-                            switch((TypeMethod) Properties.Settings.Default.TypeMethod)
+                            int keyDelayBetweenMS = Properties.Settings.Default.KeyDelayBetweenMS;
+                            switch ((TypeMethod)Properties.Settings.Default.TypeMethod)
                             {
                                 case TypeMethod.AutoIt_Send:
-                                    AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", keyDelayMS);
-                                    AutoIt.AutoItX.Send(clip, 1);
+                                    AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", keyDelayBetweenMS);
+                                    // send each character of clipboard to AutoIt indivitually so that we halt mid paste
+                                    foreach (var c in clip)
+                                    {
+                                        // halt keystrokes when Escape key is read
+                                        if (GetAsyncKeyState(Keys.Escape)) break;
+                                        AutoIt.AutoItX.Send(c.ToString(), 1);
+                                    }
                                     break;
                                 case TypeMethod.Forms_SendKeys:
                                     var list = ProcessSendKeys(clip);
-                                    foreach(var s in list)
+                                    foreach (var s in list)
                                     {
+                                        // halt keystrokes when Escape key is read
+                                        if (GetAsyncKeyState(Keys.Escape)) break;
                                         SendKeys.SendWait(s);
-                                        Thread.Sleep(keyDelayMS);
+                                        Thread.Sleep(keyDelayBetweenMS);
                                     }
                                     break;
                             }
+                            StartHotKey();
                         }
                     });
                     break;
@@ -303,9 +221,9 @@ namespace ClickPaste
         {
             var list = new List<string>();
             var specials = @"{}[]+^%~()";
-            foreach(char c in raw)
+            foreach (char c in raw)
             {
-                if(-1 != specials.IndexOf(c))
+                if (-1 != specials.IndexOf(c))
                 {
                     list.Add("{" + c.ToString() + "}");
                 }
@@ -316,21 +234,51 @@ namespace ClickPaste
             }
             return list;
         }
+        void StartHotKey()
+        {
+            var hotkeyLetter = Properties.Settings.Default.HotKey;
+            if (!string.IsNullOrEmpty(hotkeyLetter))
+            {
+                try
+                {
+                    Keys HotKey = (Keys)Enum.Parse(typeof(Keys), hotkeyLetter);
+                    _usingHotKey = HotKeyManager.RegisterHotKey(HotKey, (KeyModifiers)Properties.Settings.Default.HotKeyModifier);
+                    HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Could not register hot key: " + e.Message);
+                }
+            }
+        }
+        void StopHotKey()
+        {
+            if (_usingHotKey.HasValue)
+            {
+                HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
+                HotKeyManager.UnregisterHotKey(_usingHotKey.Value);
+            }
+            _usingHotKey = null;
+        }
+        void Settings(object sender, EventArgs e)
+        {
+            if (!_settingsOpen)
+            {
+                _settingsOpen = true;
+            }
+            StopHotKey();
+            var settings = new SettingsForm();
+            settings.ShowDialog();
+            StartHotKey();
+        }
 
         void Exit(object sender, EventArgs e)
         {
-            if (_hook != null)
-            {
-                _hook.MouseUp -= _hook_MouseUp;
-                _hook.KeyDown -= _hook_KeyDown;
-                _hook.Dispose();
-                _hook = null;
-                Native.SystemParametersInfo(0x0057, 0, null, 0);
-            }
+            EndTrack();
             // Hide tray icon, otherwise it will remain shown until user mouses over it
             _notify.Visible = false;
             _notify.Dispose();
-
+            StopHotKey();
             Application.Exit();
         }
     }
