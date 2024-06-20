@@ -1,0 +1,7 @@
+Re-forked from Collective-Software. Added features, and fixed some issues with new Collective-Software:master (v1.1.0).
+
+Fixed an issue with Collective-Software:master where the Typing Method in settings is locked to AutoIT.
+
+Added a setting to delay before sending keys.
+
+Added the ability to halt pasting by pressing escape.
