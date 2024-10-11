@@ -33,6 +33,8 @@
             this.Method_AutoIt = new System.Windows.Forms.RadioButton();
             this.Method_Forms = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.startDelayMS = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.DelayMS = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -43,12 +45,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.HotKey_Letter = new System.Windows.Forms.TextBox();
             this.Done = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.startDelayMS = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.confirmOver = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.confirmOverActive = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.confirmOver = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -103,6 +103,22 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Delays:";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(59, 48);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(132, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "milliseconds between keys";
+            // 
+            // startDelayMS
+            // 
+            this.startDelayMS.Location = new System.Drawing.Point(6, 19);
+            this.startDelayMS.Name = "startDelayMS";
+            this.startDelayMS.Size = new System.Drawing.Size(47, 20);
+            this.startDelayMS.TabIndex = 2;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -140,7 +156,7 @@
             this.HotKey_Windows.Location = new System.Drawing.Point(6, 115);
             this.HotKey_Windows.Name = "HotKey_Windows";
             this.HotKey_Windows.Size = new System.Drawing.Size(70, 17);
-            this.HotKey_Windows.TabIndex = 8;
+            this.HotKey_Windows.TabIndex = 10;
             this.HotKey_Windows.Tag = "8";
             this.HotKey_Windows.Text = "Windows";
             this.HotKey_Windows.UseVisualStyleBackColor = true;
@@ -151,7 +167,7 @@
             this.HotKey_Shift.Location = new System.Drawing.Point(6, 92);
             this.HotKey_Shift.Name = "HotKey_Shift";
             this.HotKey_Shift.Size = new System.Drawing.Size(47, 17);
-            this.HotKey_Shift.TabIndex = 7;
+            this.HotKey_Shift.TabIndex = 9;
             this.HotKey_Shift.Tag = "4";
             this.HotKey_Shift.Text = "Shift";
             this.HotKey_Shift.UseVisualStyleBackColor = true;
@@ -162,7 +178,7 @@
             this.HotKey_Control.Location = new System.Drawing.Point(6, 69);
             this.HotKey_Control.Name = "HotKey_Control";
             this.HotKey_Control.Size = new System.Drawing.Size(59, 17);
-            this.HotKey_Control.TabIndex = 6;
+            this.HotKey_Control.TabIndex = 8;
             this.HotKey_Control.Tag = "2";
             this.HotKey_Control.Text = "Control";
             this.HotKey_Control.UseVisualStyleBackColor = true;
@@ -173,7 +189,7 @@
             this.HotKey_Alt.Location = new System.Drawing.Point(6, 46);
             this.HotKey_Alt.Name = "HotKey_Alt";
             this.HotKey_Alt.Size = new System.Drawing.Size(38, 17);
-            this.HotKey_Alt.TabIndex = 5;
+            this.HotKey_Alt.TabIndex = 7;
             this.HotKey_Alt.Tag = "1";
             this.HotKey_Alt.Text = "Alt";
             this.HotKey_Alt.UseVisualStyleBackColor = true;
@@ -192,7 +208,7 @@
             this.HotKey_Letter.Location = new System.Drawing.Point(6, 19);
             this.HotKey_Letter.Name = "HotKey_Letter";
             this.HotKey_Letter.Size = new System.Drawing.Size(60, 20);
-            this.HotKey_Letter.TabIndex = 4;
+            this.HotKey_Letter.TabIndex = 6;
             this.HotKey_Letter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotKey_Letter_KeyDown);
             // 
             // Done
@@ -201,26 +217,10 @@
             this.Done.Location = new System.Drawing.Point(77, 358);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
-            this.Done.TabIndex = 9;
+            this.Done.TabIndex = 11;
             this.Done.Text = "Done";
             this.Done.UseVisualStyleBackColor = true;
             this.Done.Click += new System.EventHandler(this.Done_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(59, 48);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(132, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "milliseconds between keys";
-            // 
-            // startDelayMS
-            // 
-            this.startDelayMS.Location = new System.Drawing.Point(6, 19);
-            this.startDelayMS.Name = "startDelayMS";
-            this.startDelayMS.Size = new System.Drawing.Size(47, 20);
-            this.startDelayMS.TabIndex = 2;
             // 
             // groupBox4
             // 
@@ -233,12 +233,16 @@
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
             // 
-            // confirmOver
+            // confirmOverActive
             // 
-            this.confirmOver.Location = new System.Drawing.Point(6, 17);
-            this.confirmOver.Name = "confirmOver";
-            this.confirmOver.Size = new System.Drawing.Size(47, 20);
-            this.confirmOver.TabIndex = 3;
+            this.confirmOverActive.AutoSize = true;
+            this.confirmOverActive.Location = new System.Drawing.Point(6, 0);
+            this.confirmOverActive.Name = "confirmOverActive";
+            this.confirmOverActive.Size = new System.Drawing.Size(159, 17);
+            this.confirmOverActive.TabIndex = 4;
+            this.confirmOverActive.Text = "Confirm if pasting more than:";
+            this.confirmOverActive.UseVisualStyleBackColor = true;
+            this.confirmOverActive.CheckedChanged += new System.EventHandler(this.confirmOverActive_CheckedChanged);
             // 
             // label4
             // 
@@ -249,16 +253,12 @@
             this.label4.TabIndex = 6;
             this.label4.Text = "keystrokes";
             // 
-            // confirmOverActive
+            // confirmOver
             // 
-            this.confirmOverActive.AutoSize = true;
-            this.confirmOverActive.Location = new System.Drawing.Point(6, 0);
-            this.confirmOverActive.Name = "confirmOverActive";
-            this.confirmOverActive.Size = new System.Drawing.Size(159, 17);
-            this.confirmOverActive.TabIndex = 7;
-            this.confirmOverActive.Text = "Confirm if pasting more than:";
-            this.confirmOverActive.UseVisualStyleBackColor = true;
-            this.confirmOverActive.CheckedChanged += new System.EventHandler(this.confirmOverActive_CheckedChanged);
+            this.confirmOver.Location = new System.Drawing.Point(6, 17);
+            this.confirmOver.Name = "confirmOver";
+            this.confirmOver.Size = new System.Drawing.Size(47, 20);
+            this.confirmOver.TabIndex = 5;
             // 
             // SettingsForm
             // 
