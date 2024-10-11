@@ -216,24 +216,30 @@ namespace ClickPaste
                             // left click has selected the thing we want to paste, and placed the cursor
                             // so all we have to do is type
                             int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
-                            switch((TypeMethod) Properties.Settings.Default.TypeMethod)
+                            var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
+                            IList<string> list = PrepareKeystrokes(clip, method);
+                            
+                            if(TypeMethod.AutoIt_Send == method)
                             {
+                                AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
+                            }
+                            foreach(var s in list)
+                            {
+                                switch(method)
+                                {
+
                                 case TypeMethod.AutoIt_Send:
-                                    AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", keyDelayMS);
-                                    AutoIt.AutoItX.Send(clip, 1);
-                                    break;
-                                case TypeMethod.Forms_SendKeys:
-                                    var list = ProcessSendKeys(clip);
-                                    foreach(var s in list)
-                                    {
+                                    AutoIt.AutoItX.Send(s, 1);
+                                        break;
+                                    case TypeMethod.Forms_SendKeys:
                                         SendKeys.SendWait(s);
-                                        Thread.Sleep(keyDelayMS);
-                                        if(cancel.IsCancellationRequested)
-                                        {
-                                            break;//stop typing early
-                                        }
-                                    }
-                                    break;
+                                        break;
+                                }
+                                Thread.Sleep(keyDelayMS);
+                                if(cancel.IsCancellationRequested)
+                                {
+                                    break;//stop typing early
+                                }
                             }
                             _notify.Icon = icon;
                             StopHotKey();
@@ -243,13 +249,13 @@ namespace ClickPaste
                     break;
             }
         }
-        IList<string> ProcessSendKeys(string raw)
+        IList<string> PrepareKeystrokes(string raw, TypeMethod method)
         {
             var list = new List<string>();
             var specials = @"{}[]+^%~()";
             foreach(char c in raw)
             {
-                if(-1 != specials.IndexOf(c))
+                if(method == TypeMethod.Forms_SendKeys && (-1 != specials.IndexOf(c)))
                 {
                     list.Add("{" + c.ToString() + "}");
                 }
