@@ -62,7 +62,7 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(207, 48);
-            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Typing Method:";
             // 
@@ -72,7 +72,7 @@
             this.Method_AutoIt.Location = new System.Drawing.Point(116, 19);
             this.Method_AutoIt.Name = "Method_AutoIt";
             this.Method_AutoIt.Size = new System.Drawing.Size(81, 17);
-            this.Method_AutoIt.TabIndex = 1;
+            this.Method_AutoIt.TabIndex = 2;
             this.Method_AutoIt.TabStop = true;
             this.Method_AutoIt.Tag = "1";
             this.Method_AutoIt.Text = "AutoIt Send";
@@ -84,7 +84,7 @@
             this.Method_Forms.Location = new System.Drawing.Point(6, 19);
             this.Method_Forms.Name = "Method_Forms";
             this.Method_Forms.Size = new System.Drawing.Size(104, 17);
-            this.Method_Forms.TabIndex = 0;
+            this.Method_Forms.TabIndex = 1;
             this.Method_Forms.TabStop = true;
             this.Method_Forms.Tag = "0";
             this.Method_Forms.Text = "Forms.SendKeys";
@@ -117,7 +117,7 @@
             this.startDelayMS.Location = new System.Drawing.Point(6, 19);
             this.startDelayMS.Name = "startDelayMS";
             this.startDelayMS.Size = new System.Drawing.Size(47, 20);
-            this.startDelayMS.TabIndex = 2;
+            this.startDelayMS.TabIndex = 1;
             // 
             // label1
             // 
@@ -133,7 +133,7 @@
             this.DelayMS.Location = new System.Drawing.Point(6, 45);
             this.DelayMS.Name = "DelayMS";
             this.DelayMS.Size = new System.Drawing.Size(47, 20);
-            this.DelayMS.TabIndex = 3;
+            this.DelayMS.TabIndex = 2;
             // 
             // groupBox3
             // 
@@ -146,7 +146,7 @@
             this.groupBox3.Location = new System.Drawing.Point(15, 206);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(204, 141);
-            this.groupBox3.TabIndex = 3;
+            this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Hot Key:";
             // 
@@ -156,7 +156,7 @@
             this.HotKey_Windows.Location = new System.Drawing.Point(6, 115);
             this.HotKey_Windows.Name = "HotKey_Windows";
             this.HotKey_Windows.Size = new System.Drawing.Size(70, 17);
-            this.HotKey_Windows.TabIndex = 10;
+            this.HotKey_Windows.TabIndex = 5;
             this.HotKey_Windows.Tag = "8";
             this.HotKey_Windows.Text = "Windows";
             this.HotKey_Windows.UseVisualStyleBackColor = true;
@@ -167,7 +167,7 @@
             this.HotKey_Shift.Location = new System.Drawing.Point(6, 92);
             this.HotKey_Shift.Name = "HotKey_Shift";
             this.HotKey_Shift.Size = new System.Drawing.Size(47, 17);
-            this.HotKey_Shift.TabIndex = 9;
+            this.HotKey_Shift.TabIndex = 4;
             this.HotKey_Shift.Tag = "4";
             this.HotKey_Shift.Text = "Shift";
             this.HotKey_Shift.UseVisualStyleBackColor = true;
@@ -178,7 +178,7 @@
             this.HotKey_Control.Location = new System.Drawing.Point(6, 69);
             this.HotKey_Control.Name = "HotKey_Control";
             this.HotKey_Control.Size = new System.Drawing.Size(59, 17);
-            this.HotKey_Control.TabIndex = 8;
+            this.HotKey_Control.TabIndex = 3;
             this.HotKey_Control.Tag = "2";
             this.HotKey_Control.Text = "Control";
             this.HotKey_Control.UseVisualStyleBackColor = true;
@@ -189,7 +189,7 @@
             this.HotKey_Alt.Location = new System.Drawing.Point(6, 46);
             this.HotKey_Alt.Name = "HotKey_Alt";
             this.HotKey_Alt.Size = new System.Drawing.Size(38, 17);
-            this.HotKey_Alt.TabIndex = 7;
+            this.HotKey_Alt.TabIndex = 2;
             this.HotKey_Alt.Tag = "1";
             this.HotKey_Alt.Text = "Alt";
             this.HotKey_Alt.UseVisualStyleBackColor = true;
@@ -208,7 +208,7 @@
             this.HotKey_Letter.Location = new System.Drawing.Point(6, 19);
             this.HotKey_Letter.Name = "HotKey_Letter";
             this.HotKey_Letter.Size = new System.Drawing.Size(60, 20);
-            this.HotKey_Letter.TabIndex = 6;
+            this.HotKey_Letter.TabIndex = 1;
             this.HotKey_Letter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotKey_Letter_KeyDown);
             // 
             // Done
@@ -217,7 +217,7 @@
             this.Done.Location = new System.Drawing.Point(77, 358);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
-            this.Done.TabIndex = 11;
+            this.Done.TabIndex = 5;
             this.Done.Text = "Done";
             this.Done.UseVisualStyleBackColor = true;
             this.Done.Click += new System.EventHandler(this.Done_Click);
@@ -230,7 +230,7 @@
             this.groupBox4.Location = new System.Drawing.Point(15, 152);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(204, 43);
-            this.groupBox4.TabIndex = 10;
+            this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             // 
             // confirmOverActive
@@ -239,7 +239,7 @@
             this.confirmOverActive.Location = new System.Drawing.Point(6, 0);
             this.confirmOverActive.Name = "confirmOverActive";
             this.confirmOverActive.Size = new System.Drawing.Size(159, 17);
-            this.confirmOverActive.TabIndex = 4;
+            this.confirmOverActive.TabIndex = 1;
             this.confirmOverActive.Text = "Confirm if pasting more than:";
             this.confirmOverActive.UseVisualStyleBackColor = true;
             this.confirmOverActive.CheckedChanged += new System.EventHandler(this.confirmOverActive_CheckedChanged);
@@ -258,7 +258,7 @@
             this.confirmOver.Location = new System.Drawing.Point(6, 17);
             this.confirmOver.Name = "confirmOver";
             this.confirmOver.Size = new System.Drawing.Size(47, 20);
-            this.confirmOver.TabIndex = 5;
+            this.confirmOver.TabIndex = 2;
             // 
             // SettingsForm
             // 
