@@ -215,6 +215,7 @@ namespace ClickPaste
                 var w = Native.GetForegroundWindow();
                 if (DialogResult.Yes != MessageBox.Show($"Confirm typing {clip.Length} characters to window '{Native.GetText(w).First(50)}'?", "ClickPaste Confirm Typing", MessageBoxButtons.YesNo))
                 {
+                    StartHotKey();// resume normal hotkey listening
                     Native.SetForegroundWindow(w);
                     return;
                 }
@@ -267,8 +268,8 @@ namespace ClickPaste
                         }
                     }
                     _notify.Icon = icon;
-                    StartHotKey();// resume normal hotkey listening
                 }
+                StartHotKey();// resume normal hotkey listening
             });
 
         }
