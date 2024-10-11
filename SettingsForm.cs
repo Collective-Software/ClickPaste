@@ -32,6 +32,10 @@ namespace ClickPaste
                 method.Checked = (Properties.Settings.Default.TypeMethod == int.Parse(method.Tag.ToString()));
             }
             DelayMS.Text = Properties.Settings.Default.KeyDelayMS.ToString();
+            startDelayMS.Text = Properties.Settings.Default.StartDelayMS.ToString();
+            confirmOverActive.Checked = Properties.Settings.Default.Confirm;
+            confirmOver.Text = Properties.Settings.Default.ConfirmOver.ToString();
+            SetConfirmControls();
             HotKey_Letter.Text = Properties.Settings.Default.HotKey;
             foreach(var mod in _modifiers)
             {
@@ -83,6 +87,17 @@ namespace ClickPaste
             {
                 Properties.Settings.Default.KeyDelayMS = delay;
             }
+            int startDelay;
+            if (int.TryParse(startDelayMS.Text, out startDelay))
+            {
+                Properties.Settings.Default.StartDelayMS = startDelay;
+            }
+            Properties.Settings.Default.Confirm = confirmOverActive.Checked;
+            int co;
+            if (int.TryParse(confirmOver.Text, out co))
+            {
+                Properties.Settings.Default.ConfirmOver = co;
+            }
             var letter = HotKey_Letter.Text;
             if (letter.Length == 1) letter = letter.ToUpperInvariant(); // can't find 'v' but knows 'V'
             Properties.Settings.Default.HotKey = letter;
@@ -98,5 +113,13 @@ namespace ClickPaste
             Properties.Settings.Default.Save();
         }
 
+        private void SetConfirmControls()
+        {
+            confirmOver.Enabled = confirmOverActive.Checked;
+        }
+        private void confirmOverActive_CheckedChanged(object sender, EventArgs e)
+        {
+            SetConfirmControls();
+        }
     }
 }

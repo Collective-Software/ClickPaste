@@ -43,9 +43,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.HotKey_Letter = new System.Windows.Forms.TextBox();
             this.Done = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.startDelayMS = new System.Windows.Forms.TextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.confirmOver = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.confirmOverActive = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -54,7 +61,7 @@
             this.groupBox1.Controls.Add(this.Method_Forms);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(151, 71);
+            this.groupBox1.Size = new System.Drawing.Size(207, 48);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Typing Method:";
@@ -62,7 +69,7 @@
             // Method_AutoIt
             // 
             this.Method_AutoIt.AutoSize = true;
-            this.Method_AutoIt.Location = new System.Drawing.Point(6, 42);
+            this.Method_AutoIt.Location = new System.Drawing.Point(116, 19);
             this.Method_AutoIt.Name = "Method_AutoIt";
             this.Method_AutoIt.Size = new System.Drawing.Size(81, 17);
             this.Method_AutoIt.TabIndex = 1;
@@ -85,29 +92,31 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.startDelayMS);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.DelayMS);
-            this.groupBox2.Location = new System.Drawing.Point(15, 89);
+            this.groupBox2.Location = new System.Drawing.Point(15, 67);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(148, 55);
+            this.groupBox2.Size = new System.Drawing.Size(204, 79);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Delay between keys:";
+            this.groupBox2.Text = "Delays:";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(72, 22);
+            this.label1.Location = new System.Drawing.Point(59, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.Size = new System.Drawing.Size(119, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "milliseconds";
+            this.label1.Text = "milliseconds before start";
             // 
             // DelayMS
             // 
-            this.DelayMS.Location = new System.Drawing.Point(6, 19);
+            this.DelayMS.Location = new System.Drawing.Point(6, 45);
             this.DelayMS.Name = "DelayMS";
-            this.DelayMS.Size = new System.Drawing.Size(60, 20);
+            this.DelayMS.Size = new System.Drawing.Size(47, 20);
             this.DelayMS.TabIndex = 3;
             // 
             // groupBox3
@@ -118,12 +127,12 @@
             this.groupBox3.Controls.Add(this.HotKey_Alt);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.HotKey_Letter);
-            this.groupBox3.Location = new System.Drawing.Point(15, 150);
+            this.groupBox3.Location = new System.Drawing.Point(15, 206);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(148, 141);
+            this.groupBox3.Size = new System.Drawing.Size(204, 141);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Hot Key";
+            this.groupBox3.Text = "Hot Key:";
             // 
             // HotKey_Windows
             // 
@@ -189,7 +198,7 @@
             // Done
             // 
             this.Done.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Done.Location = new System.Drawing.Point(47, 315);
+            this.Done.Location = new System.Drawing.Point(77, 358);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
             this.Done.TabIndex = 9;
@@ -197,13 +206,68 @@
             this.Done.UseVisualStyleBackColor = true;
             this.Done.Click += new System.EventHandler(this.Done_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(59, 48);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(132, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "milliseconds between keys";
+            // 
+            // startDelayMS
+            // 
+            this.startDelayMS.Location = new System.Drawing.Point(6, 19);
+            this.startDelayMS.Name = "startDelayMS";
+            this.startDelayMS.Size = new System.Drawing.Size(47, 20);
+            this.startDelayMS.TabIndex = 2;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.confirmOverActive);
+            this.groupBox4.Controls.Add(this.label4);
+            this.groupBox4.Controls.Add(this.confirmOver);
+            this.groupBox4.Location = new System.Drawing.Point(15, 152);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(204, 43);
+            this.groupBox4.TabIndex = 10;
+            this.groupBox4.TabStop = false;
+            // 
+            // confirmOver
+            // 
+            this.confirmOver.Location = new System.Drawing.Point(6, 17);
+            this.confirmOver.Name = "confirmOver";
+            this.confirmOver.Size = new System.Drawing.Size(47, 20);
+            this.confirmOver.TabIndex = 3;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(59, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(58, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "keystrokes";
+            // 
+            // confirmOverActive
+            // 
+            this.confirmOverActive.AutoSize = true;
+            this.confirmOverActive.Location = new System.Drawing.Point(6, 0);
+            this.confirmOverActive.Name = "confirmOverActive";
+            this.confirmOverActive.Size = new System.Drawing.Size(159, 17);
+            this.confirmOverActive.TabIndex = 7;
+            this.confirmOverActive.Text = "Confirm if pasting more than:";
+            this.confirmOverActive.UseVisualStyleBackColor = true;
+            this.confirmOverActive.CheckedChanged += new System.EventHandler(this.confirmOverActive_CheckedChanged);
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.Done;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(177, 350);
+            this.ClientSize = new System.Drawing.Size(231, 393);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.Done);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -222,6 +286,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -242,5 +308,11 @@
         private System.Windows.Forms.CheckBox HotKey_Shift;
         private System.Windows.Forms.CheckBox HotKey_Control;
         private System.Windows.Forms.Button Done;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox startDelayMS;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox confirmOver;
+        private System.Windows.Forms.CheckBox confirmOverActive;
     }
 }

@@ -61,6 +61,11 @@ namespace ClickPaste
         public static string[] Names(this Type enumType) => Enum.GetNames(enumType);
         public static int Count(this Type enumType) => enumType.Names().Length;
         public static object Value(this Type enumType, string name) => Enum.Parse(enumType, name);
+        public static string First(this string s, int count)
+        {
+            if (count > s.Length) return s;
+            return s.Substring(0, count);
+        }
     }
     public enum TypeMethod
     {
@@ -125,6 +130,7 @@ namespace ClickPaste
             }
         }
 
+
         private void _hook_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Escape)
@@ -166,6 +172,17 @@ namespace ClickPaste
                 //case MouseButtons.Middle:
                     EndTrack();
                     var clip = Clipboard.GetText();
+
+                    if (Properties.Settings.Default.Confirm && clip.Length > Properties.Settings.Default.ConfirmOver)
+                    {
+                        SystemSounds.Beep.Play();
+                        var w = Native.GetForegroundWindow();
+                        if (DialogResult.Yes != MessageBox.Show($"Confirm typing {clip.Length} characters to window '{Native.GetText(w).First(50)}'?", "ClickPaste Confirm Typing", MessageBoxButtons.YesNo))
+                        {
+                            return;
+                        }
+                        Native.SetForegroundWindow(w);
+                    }
                     Task.Run(() =>
                     {
                         // check if it's my window
@@ -178,7 +195,8 @@ namespace ClickPaste
                         }
                         else
                         {
-                            Thread.Sleep(100);
+                            int startDelayMS = Properties.Settings.Default.StartDelayMS;
+                            Thread.Sleep(100 + startDelayMS);
                             // don't listen to our own typing
                             StopHotKey();
                             // left click has selected the thing we want to paste, and placed the cursor

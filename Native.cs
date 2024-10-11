@@ -44,11 +44,26 @@ namespace ClickPaste
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
+        public static extern IntPtr SetForegroundWindow(IntPtr hwnd);
+        [DllImport("user32.dll")]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
         [DllImport("user32.dll")]
         public static extern int ActivateKeyboardLayout(int HKL, int flags);
         private static uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
         private static int HWND_BROADCAST = 0xffff;
         private static uint KLF_ACTIVATE = 1;
+
+        [DllImport("user32.dll")]
+        public static extern void GetWindowText(IntPtr hWnd, StringBuilder lpString, Int32 nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern int GetWindowTextLength(IntPtr hWnd);
+        public static string GetText(IntPtr hwnd)
+        {
+            int length = GetWindowTextLength(hwnd);
+            StringBuilder sb = new StringBuilder(length + 1);
+            GetWindowText(hwnd, sb, sb.Capacity);
+            return sb.ToString();
+        }
     }
 }
