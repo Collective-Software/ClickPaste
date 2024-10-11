@@ -196,6 +196,9 @@ namespace ClickPaste
                         }
                         else
                         {
+                            var traySize = SystemInformation.SmallIconSize;
+                            var icon = _notify.Icon;
+                            _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
                             int startDelayMS = Properties.Settings.Default.StartDelayMS;
                             Thread.Sleep(100 + startDelayMS);
                             // don't listen to our own typing
@@ -218,6 +221,7 @@ namespace ClickPaste
                                     }
                                     break;
                             }
+                            _notify.Icon = icon;
                             StartHotKey();
                         }
                     });
