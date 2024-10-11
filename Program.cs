@@ -179,6 +179,7 @@ namespace ClickPaste
                         var w = Native.GetForegroundWindow();
                         if (DialogResult.Yes != MessageBox.Show($"Confirm typing {clip.Length} characters to window '{Native.GetText(w).First(50)}'?", "ClickPaste Confirm Typing", MessageBoxButtons.YesNo))
                         {
+                            Native.SetForegroundWindow(w);
                             return;
                         }
                         Native.SetForegroundWindow(w);
