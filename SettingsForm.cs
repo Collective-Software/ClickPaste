@@ -15,6 +15,7 @@ namespace ClickPaste
     {
         RadioButton[] _methods;
         CheckBox[] _modifiers;
+        RadioButton[] _hotKeyModes;
         public SettingsForm()
         {
             InitializeComponent();
@@ -26,6 +27,9 @@ namespace ClickPaste
             _modifiers[1] = HotKey_Control;
             _modifiers[2] = HotKey_Shift;
             _modifiers[3] = HotKey_Windows;
+            _hotKeyModes = new RadioButton[2];
+            _hotKeyModes[0] = hotKeyModeTarget;
+            _hotKeyModes[1] = hotKeyModeType;
 
             foreach(var method in _methods)
             {
@@ -40,6 +44,10 @@ namespace ClickPaste
             foreach(var mod in _modifiers)
             {
                 mod.Checked = (0 != (Properties.Settings.Default.HotKeyModifier & int.Parse(mod.Tag.ToString())));
+            }
+            foreach(var mode in _hotKeyModes)
+            {
+                mode.Checked = (Properties.Settings.Default.HotKeyMode == int.Parse(mode.Tag.ToString()));
             }
         }
         private void HotKey_Letter_KeyDown(object sender, KeyEventArgs e)
@@ -109,6 +117,13 @@ namespace ClickPaste
                     mods |= int.Parse(mod.Tag.ToString());
                 }
                 Properties.Settings.Default.HotKeyModifier = mods;
+            }
+            foreach(var mode in _hotKeyModes)
+            {
+                if (mode.Checked)
+                {
+                    Properties.Settings.Default.HotKeyMode = int.Parse(mode.Tag.ToString()); ;
+                }
             }
             Properties.Settings.Default.Save();
         }

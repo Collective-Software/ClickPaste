@@ -72,7 +72,11 @@ namespace ClickPaste
         Forms_SendKeys = 0,
         AutoIt_Send
     }
-
+    public enum HotKeyMode
+    {
+        Target = 0,
+        JustGo
+    }
     public class TrayApplicationContext : ApplicationContext
     {
         NotifyIcon _notify = null;
@@ -117,10 +121,25 @@ namespace ClickPaste
         }
         private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
         {
-            StartTrack();
+            StopHotKey();
+            // wait until control keys are no longer pressed
+            while (Native.IsModifierKeyPressed())
+            {
+                Thread.Sleep(300);
+            }
+            switch((HotKeyMode) Properties.Settings.Default.HotKeyMode)
+            {
+                case HotKeyMode.Target:
+                    StartTrack();
+                    break;
+                case HotKeyMode.JustGo:
+                    StartTyping();
+                    break;
+            }
         }
         private void HotKeyManager_EscapePressed(object sender, HotKeyEventArgs e)
         {
+            StopHotKey();
             _stop.Cancel();
         }
         void StartTrack()
@@ -165,9 +184,11 @@ namespace ClickPaste
             {
                 //case MouseButtons.Middle:
                 case MouseButtons.Left: // this is a lie, we only get left after mouse released
-            
-                    StartTrack();
-                    
+
+                    if (!_settingsOpen)
+                    {
+                        StartTrack();
+                    }                    
                     break;
             }
         }
@@ -178,76 +199,78 @@ namespace ClickPaste
                 case MouseButtons.Left:
                 //case MouseButtons.Middle:
                     EndTrack();
-                    var clip = Clipboard.GetText();
-
-                    if (Properties.Settings.Default.Confirm && clip.Length > Properties.Settings.Default.ConfirmOver)
-                    {
-                        SystemSounds.Beep.Play();
-                        var w = Native.GetForegroundWindow();
-                        if (DialogResult.Yes != MessageBox.Show($"Confirm typing {clip.Length} characters to window '{Native.GetText(w).First(50)}'?", "ClickPaste Confirm Typing", MessageBoxButtons.YesNo))
-                        {
-                            Native.SetForegroundWindow(w);
-                            return;
-                        }
-                        Native.SetForegroundWindow(w);
-                    }
-                    _stop = new CancellationTokenSource();
-                    Task.Run(() =>
-                    {
-                        // check if it's my window
-                        //IntPtr hwnd = Native.WindowFromPoint(e.X, e.Y);
-                        // ... we don't have a window yet
-                        if (string.IsNullOrEmpty(clip))
-                        {
-                            // nothing to paste
-                            SystemSounds.Beep.Play();
-                        }
-                        else
-                        {
-                            var cancel = _stop.Token;
-                            var traySize = SystemInformation.SmallIconSize;
-                            var icon = _notify.Icon;
-                            _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
-                            int startDelayMS = Properties.Settings.Default.StartDelayMS;
-                            Thread.Sleep(100 + startDelayMS);
-                            // don't listen to our own typing
-                            StopHotKey();
-                            StartHotKeyEscape();
-                            // left click has selected the thing we want to paste, and placed the cursor
-                            // so all we have to do is type
-                            int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
-                            var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
-                            IList<string> list = PrepareKeystrokes(clip, method);
-                            
-                            if(TypeMethod.AutoIt_Send == method)
-                            {
-                                AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
-                            }
-                            foreach(var s in list)
-                            {
-                                switch(method)
-                                {
-
-                                case TypeMethod.AutoIt_Send:
-                                    AutoIt.AutoItX.Send(s, 1);
-                                        break;
-                                    case TypeMethod.Forms_SendKeys:
-                                        SendKeys.SendWait(s);
-                                        break;
-                                }
-                                Thread.Sleep(keyDelayMS);
-                                if(cancel.IsCancellationRequested)
-                                {
-                                    break;//stop typing early
-                                }
-                            }
-                            _notify.Icon = icon;
-                            StopHotKey();
-                            StartHotKey();
-                        }
-                    });
+                    StartTyping();
                     break;
             }
+        }
+        void StartTyping()
+        {
+            var clip = Clipboard.GetText();
+
+            // whatever window is under focus right now should be the target
+
+            if (Properties.Settings.Default.Confirm && clip.Length > Properties.Settings.Default.ConfirmOver)
+            {
+                SystemSounds.Beep.Play();
+                var w = Native.GetForegroundWindow();
+                if (DialogResult.Yes != MessageBox.Show($"Confirm typing {clip.Length} characters to window '{Native.GetText(w).First(50)}'?", "ClickPaste Confirm Typing", MessageBoxButtons.YesNo))
+                {
+                    Native.SetForegroundWindow(w);
+                    return;
+                }
+                Native.SetForegroundWindow(w);
+            }
+            _stop = new CancellationTokenSource();
+            Task.Run(() =>
+            {
+                // check if it's my window
+                //IntPtr hwnd = Native.WindowFromPoint(e.X, e.Y);
+                // ... we don't have a window yet
+                if (string.IsNullOrEmpty(clip))
+                {
+                    // nothing to paste
+                    SystemSounds.Beep.Play();
+                }
+                else
+                {
+                    var cancel = _stop.Token;
+                    var traySize = SystemInformation.SmallIconSize;
+                    var icon = _notify.Icon;
+                    _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
+                    int startDelayMS = Properties.Settings.Default.StartDelayMS;
+                    Thread.Sleep(100 + startDelayMS);
+                    StartHotKeyEscape();
+                    int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
+                    var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
+                    IList<string> list = PrepareKeystrokes(clip, method);
+
+                    if (TypeMethod.AutoIt_Send == method)
+                    {
+                        AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
+                    }
+                    foreach (var s in list)
+                    {
+                        switch (method)
+                        {
+
+                            case TypeMethod.AutoIt_Send:
+                                AutoIt.AutoItX.Send(s, 1);
+                                break;
+                            case TypeMethod.Forms_SendKeys:
+                                SendKeys.SendWait(s);
+                                break;
+                        }
+                        Thread.Sleep(keyDelayMS);
+                        if (cancel.IsCancellationRequested)
+                        {
+                            break;//stop typing early
+                        }
+                    }
+                    _notify.Icon = icon;
+                    StartHotKey();// resume normal hotkey listening
+                }
+            });
+
         }
         IList<string> PrepareKeystrokes(string raw, TypeMethod method)
         {
@@ -313,13 +336,15 @@ namespace ClickPaste
 
         void Settings(object sender, EventArgs e)
         {
-            if (!_settingsOpen)
+            if (_settingsOpen)
             {
-                _settingsOpen = true;
+                return;
             }
+            _settingsOpen = true;
             StopHotKey();
             var settings = new SettingsForm();
             settings.ShowDialog();
+            _settingsOpen = false;
             StartHotKey();            
         }
 

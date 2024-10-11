@@ -49,6 +49,8 @@
             this.confirmOverActive = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.confirmOver = new System.Windows.Forms.TextBox();
+            this.hotKeyModeTarget = new System.Windows.Forms.RadioButton();
+            this.hotKeyModeType = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -137,15 +139,17 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.hotKeyModeType);
+            this.groupBox3.Controls.Add(this.hotKeyModeTarget);
             this.groupBox3.Controls.Add(this.HotKey_Windows);
             this.groupBox3.Controls.Add(this.HotKey_Shift);
             this.groupBox3.Controls.Add(this.HotKey_Control);
             this.groupBox3.Controls.Add(this.HotKey_Alt);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.HotKey_Letter);
-            this.groupBox3.Location = new System.Drawing.Point(15, 206);
+            this.groupBox3.Location = new System.Drawing.Point(15, 208);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(204, 141);
+            this.groupBox3.Size = new System.Drawing.Size(204, 155);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Hot Key:";
@@ -153,7 +157,7 @@
             // HotKey_Windows
             // 
             this.HotKey_Windows.AutoSize = true;
-            this.HotKey_Windows.Location = new System.Drawing.Point(6, 115);
+            this.HotKey_Windows.Location = new System.Drawing.Point(58, 69);
             this.HotKey_Windows.Name = "HotKey_Windows";
             this.HotKey_Windows.Size = new System.Drawing.Size(70, 17);
             this.HotKey_Windows.TabIndex = 5;
@@ -164,7 +168,7 @@
             // HotKey_Shift
             // 
             this.HotKey_Shift.AutoSize = true;
-            this.HotKey_Shift.Location = new System.Drawing.Point(6, 92);
+            this.HotKey_Shift.Location = new System.Drawing.Point(6, 69);
             this.HotKey_Shift.Name = "HotKey_Shift";
             this.HotKey_Shift.Size = new System.Drawing.Size(47, 17);
             this.HotKey_Shift.TabIndex = 4;
@@ -175,7 +179,7 @@
             // HotKey_Control
             // 
             this.HotKey_Control.AutoSize = true;
-            this.HotKey_Control.Location = new System.Drawing.Point(6, 69);
+            this.HotKey_Control.Location = new System.Drawing.Point(58, 46);
             this.HotKey_Control.Name = "HotKey_Control";
             this.HotKey_Control.Size = new System.Drawing.Size(59, 17);
             this.HotKey_Control.TabIndex = 3;
@@ -214,7 +218,7 @@
             // Done
             // 
             this.Done.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Done.Location = new System.Drawing.Point(77, 358);
+            this.Done.Location = new System.Drawing.Point(77, 386);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
             this.Done.TabIndex = 5;
@@ -229,7 +233,7 @@
             this.groupBox4.Controls.Add(this.confirmOver);
             this.groupBox4.Location = new System.Drawing.Point(15, 152);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(204, 43);
+            this.groupBox4.Size = new System.Drawing.Size(204, 50);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             // 
@@ -260,13 +264,37 @@
             this.confirmOver.Size = new System.Drawing.Size(47, 20);
             this.confirmOver.TabIndex = 2;
             // 
+            // hotKeyModeTarget
+            // 
+            this.hotKeyModeTarget.AutoSize = true;
+            this.hotKeyModeTarget.Location = new System.Drawing.Point(6, 101);
+            this.hotKeyModeTarget.Name = "hotKeyModeTarget";
+            this.hotKeyModeTarget.Size = new System.Drawing.Size(122, 17);
+            this.hotKeyModeTarget.TabIndex = 6;
+            this.hotKeyModeTarget.TabStop = true;
+            this.hotKeyModeTarget.Tag = "0";
+            this.hotKeyModeTarget.Text = "Go into Target mode";
+            this.hotKeyModeTarget.UseVisualStyleBackColor = true;
+            // 
+            // hotKeyModeType
+            // 
+            this.hotKeyModeType.AutoSize = true;
+            this.hotKeyModeType.Location = new System.Drawing.Point(6, 124);
+            this.hotKeyModeType.Name = "hotKeyModeType";
+            this.hotKeyModeType.Size = new System.Drawing.Size(98, 17);
+            this.hotKeyModeType.TabIndex = 7;
+            this.hotKeyModeType.TabStop = true;
+            this.hotKeyModeType.Tag = "1";
+            this.hotKeyModeType.Text = "Just start typing";
+            this.hotKeyModeType.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.Done;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(231, 393);
+            this.ClientSize = new System.Drawing.Size(231, 421);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.Done);
             this.Controls.Add(this.groupBox3);
@@ -314,5 +342,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox confirmOver;
         private System.Windows.Forms.CheckBox confirmOverActive;
+        private System.Windows.Forms.RadioButton hotKeyModeType;
+        private System.Windows.Forms.RadioButton hotKeyModeTarget;
     }
 }

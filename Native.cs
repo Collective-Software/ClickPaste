@@ -41,6 +41,23 @@ namespace ClickPaste
         public static extern bool GetKeyboardLayoutName([Out] StringBuilder pwszKLID);
         [DllImport("user32.dll")]
         public static extern IntPtr GetKeyboardLayout(uint idThread);
+        private const int KEY_PRESSED = 0x8000;
+        private const int VK_SHIFT = 0x10;
+        private const int VK_CONTROL = 0x11;
+        private const int VK_MENU = 0x12;
+        private const int VK_LWIN = 0x5B;
+        private const int VK_RWIN = 0x5C;
+        [DllImport("USER32.dll")]
+        static extern short GetKeyState(int nVirtKey);
+        public static bool IsModifierKeyPressed()
+        {
+            return
+                Convert.ToBoolean(GetKeyState(VK_SHIFT) & KEY_PRESSED) ||
+                Convert.ToBoolean(GetKeyState(VK_CONTROL) & KEY_PRESSED) ||
+                Convert.ToBoolean(GetKeyState(VK_MENU) & KEY_PRESSED) ||
+                Convert.ToBoolean(GetKeyState(VK_LWIN) & KEY_PRESSED) ||
+                Convert.ToBoolean(GetKeyState(VK_RWIN) & KEY_PRESSED);
+        }
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]

@@ -9,7 +9,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="KeyDelayMS" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">5</Value>
+      <Value Profile="(Default)">15</Value>
     </Setting>
     <Setting Name="HotKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">V</Value>
@@ -21,10 +21,13 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="ConfirmOver" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="Confirm" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HotKeyMode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

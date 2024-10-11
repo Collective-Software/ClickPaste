@@ -49,7 +49,7 @@ namespace ClickPaste.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
         public int KeyDelayMS {
             get {
                 return ((int)(this["KeyDelayMS"]));
@@ -97,6 +97,7 @@ namespace ClickPaste.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int ConfirmOver {
             get {
                 return ((int)(this["ConfirmOver"]));
@@ -115,6 +116,18 @@ namespace ClickPaste.Properties {
             }
             set {
                 this["Confirm"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HotKeyMode {
+            get {
+                return ((int)(this["HotKeyMode"]));
+            }
+            set {
+                this["HotKeyMode"] = value;
             }
         }
     }
