@@ -79,7 +79,7 @@
             this.Method_Forms.Size = new System.Drawing.Size(104, 17);
             this.Method_Forms.TabIndex = 0;
             this.Method_Forms.TabStop = true;
-            this.Method_Forms.Tag = "1";
+            this.Method_Forms.Tag = "0";
             this.Method_Forms.Text = "Forms.SendKeys";
             this.Method_Forms.UseVisualStyleBackColor = true;
             // 

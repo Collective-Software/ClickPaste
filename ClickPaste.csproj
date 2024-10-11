@@ -133,4 +133,8 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release $(SolutionDir)\sign.bat $(TargetDir)\$(TargetFileName) $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+</PreBuildEvent>
+  </PropertyGroup>
 </Project>
