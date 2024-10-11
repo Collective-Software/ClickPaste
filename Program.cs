@@ -80,6 +80,9 @@ namespace ClickPaste
         MenuItem[] _typeMethods; // these are just sequential 0-based integers so don't need to map them like...
         Dictionary<int, MenuItem> _keyDelayMS;// we do here
         int? _usingHotKey;
+        EventHandler<HotKeyEventArgs> _currentHotKeyHandler = null;
+        CancellationTokenSource _stop = new CancellationTokenSource();
+
         bool _settingsOpen = false;
         public TrayApplicationContext()
         {
@@ -115,6 +118,10 @@ namespace ClickPaste
         private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
         {
             StartTrack();
+        }
+        private void HotKeyManager_EscapePressed(object sender, HotKeyEventArgs e)
+        {
+            _stop.Cancel();
         }
         void StartTrack()
         {
@@ -184,6 +191,7 @@ namespace ClickPaste
                         }
                         Native.SetForegroundWindow(w);
                     }
+                    _stop = new CancellationTokenSource();
                     Task.Run(() =>
                     {
                         // check if it's my window
@@ -196,6 +204,7 @@ namespace ClickPaste
                         }
                         else
                         {
+                            var cancel = _stop.Token;
                             var traySize = SystemInformation.SmallIconSize;
                             var icon = _notify.Icon;
                             _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
@@ -203,6 +212,7 @@ namespace ClickPaste
                             Thread.Sleep(100 + startDelayMS);
                             // don't listen to our own typing
                             StopHotKey();
+                            StartHotKeyEscape();
                             // left click has selected the thing we want to paste, and placed the cursor
                             // so all we have to do is type
                             int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
@@ -218,10 +228,15 @@ namespace ClickPaste
                                     {
                                         SendKeys.SendWait(s);
                                         Thread.Sleep(keyDelayMS);
+                                        if(cancel.IsCancellationRequested)
+                                        {
+                                            break;//stop typing early
+                                        }
                                     }
                                     break;
                             }
                             _notify.Icon = icon;
+                            StopHotKey();
                             StartHotKey();
                         }
                     });
@@ -245,8 +260,10 @@ namespace ClickPaste
             }
             return list;
         }
+        
         void StartHotKey()
         {
+            StopHotKey();
             var hotkeyLetter = Properties.Settings.Default.HotKey;
             if (!string.IsNullOrEmpty(hotkeyLetter))
             {
@@ -254,7 +271,8 @@ namespace ClickPaste
                 {
                     Keys HotKey = (Keys)Enum.Parse(typeof(Keys), hotkeyLetter);
                     _usingHotKey = HotKeyManager.RegisterHotKey(HotKey, (KeyModifiers)Properties.Settings.Default.HotKeyModifier);
-                    HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+                    _currentHotKeyHandler = new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+                    HotKeyManager.HotKeyPressed += _currentHotKeyHandler;
                 }
                 catch(Exception e)
                 {
@@ -262,15 +280,31 @@ namespace ClickPaste
                 }
             }
         }
+        void StartHotKeyEscape()
+        {
+            StopHotKey();
+            try
+            {
+                _usingHotKey = HotKeyManager.RegisterHotKey(Keys.Escape, KeyModifiers.None);
+                _currentHotKeyHandler = new EventHandler<HotKeyEventArgs>(HotKeyManager_EscapePressed);
+                HotKeyManager.HotKeyPressed += _currentHotKeyHandler;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Could not register hot key: " + e.Message);
+            }
+        }
         void StopHotKey()
         {
             if(_usingHotKey.HasValue)
             {
-                HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
+                HotKeyManager.HotKeyPressed -= _currentHotKeyHandler;
                 HotKeyManager.UnregisterHotKey(_usingHotKey.Value);
             }
             _usingHotKey = null;
+            _currentHotKeyHandler = null;
         }
+
         void Settings(object sender, EventArgs e)
         {
             if (!_settingsOpen)
