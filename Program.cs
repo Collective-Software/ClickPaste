@@ -277,6 +277,7 @@ namespace ClickPaste
         {
             var list = new List<string>();
             var specials = @"{}[]+^%~()";
+            raw = raw.Replace("\r\n", "\r");// both typing methods treat each of these as "hit enter" in notepads, and Word treats \n as "next page" somehow.
             foreach(char c in raw)
             {
                 if(method == TypeMethod.Forms_SendKeys && (-1 != specials.IndexOf(c)))
