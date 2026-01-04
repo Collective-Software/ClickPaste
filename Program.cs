@@ -246,7 +246,8 @@ namespace ClickPaste
     public enum TypeMethod
     {
         Forms_SendKeys = 0,
-        AutoIt_Send
+        AutoIt_Send = 1,
+        SendInput_ScanCode = 3  // Scan codes with ALT code fallback - works everywhere including VM consoles
     }
     public enum HotKeyMode
     {
@@ -435,6 +436,13 @@ namespace ClickPaste
                                 break;
                             case TypeMethod.Forms_SendKeys:
                                 SendKeys.SendWait(s);
+                                break;
+                            case TypeMethod.SendInput_ScanCode:
+                                // Send via scan codes with ALT code fallback - works with VM consoles
+                                foreach (char c in s)
+                                {
+                                    Native.SendCharViaScanCode(c);
+                                }
                                 break;
                         }
                         Thread.Sleep(keyDelayMS);

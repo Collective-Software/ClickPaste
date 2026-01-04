@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Method_ScanCode = new System.Windows.Forms.RadioButton();
             this.Method_AutoIt = new System.Windows.Forms.RadioButton();
             this.Method_Forms = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -56,14 +57,15 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // groupBox1
-            // 
+            //
+            this.groupBox1.Controls.Add(this.Method_ScanCode);
             this.groupBox1.Controls.Add(this.Method_AutoIt);
             this.groupBox1.Controls.Add(this.Method_Forms);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(207, 48);
+            this.groupBox1.Size = new System.Drawing.Size(207, 70);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Typing Method:";
@@ -91,7 +93,18 @@
             this.Method_Forms.Tag = "0";
             this.Method_Forms.Text = "Forms.SendKeys";
             this.Method_Forms.UseVisualStyleBackColor = true;
-            // 
+            //
+            // Method_ScanCode
+            //
+            this.Method_ScanCode.AutoSize = true;
+            this.Method_ScanCode.Location = new System.Drawing.Point(6, 42);
+            this.Method_ScanCode.Name = "Method_ScanCode";
+            this.Method_ScanCode.Size = new System.Drawing.Size(165, 17);
+            this.Method_ScanCode.TabIndex = 4;
+            this.Method_ScanCode.Tag = "3";
+            this.Method_ScanCode.Text = "SendInput";
+            this.Method_ScanCode.UseVisualStyleBackColor = true;
+            //
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label3);
@@ -344,5 +357,6 @@
         private System.Windows.Forms.CheckBox confirmOverActive;
         private System.Windows.Forms.RadioButton hotKeyModeType;
         private System.Windows.Forms.RadioButton hotKeyModeTarget;
+        private System.Windows.Forms.RadioButton Method_ScanCode;
     }
 }

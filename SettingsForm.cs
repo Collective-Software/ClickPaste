@@ -28,9 +28,10 @@ namespace ClickPaste
             // Set icon to match theme (light icon for dark mode, dark icon for light mode)
             this.Icon = dark ? Properties.Resources.Target : Properties.Resources.TargetDark;
 
-            _methods = new RadioButton[2];
+            _methods = new RadioButton[3];
             _methods[0] = Method_Forms;
             _methods[1] = Method_AutoIt;
+            _methods[2] = Method_ScanCode;
             _modifiers = new CheckBox[4];
             _modifiers[0] = HotKey_Alt;
             _modifiers[1] = HotKey_Control;

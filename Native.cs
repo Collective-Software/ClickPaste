@@ -69,6 +69,218 @@ namespace ClickPaste
 
         #endregion
 
+        #region SendInput Unicode Support (for international keyboards and Unicode characters)
+
+        public const int INPUT_KEYBOARD = 1;
+        public const uint KEYEVENTF_KEYUP = 0x0002;
+        public const uint KEYEVENTF_UNICODE = 0x0004;
+        public const uint KEYEVENTF_SCANCODE = 0x0008;
+
+        // MapVirtualKey translation types
+        public const uint MAPVK_VK_TO_VSC = 0;
+
+        // Virtual key codes for modifiers and numpad
+        public const byte VK_LSHIFT = 0xA0;
+        public const byte VK_LCONTROL = 0xA2;
+        public const byte VK_NUMPAD0 = 0x60;
+        public const byte VK_NUMPAD1 = 0x61;
+        public const byte VK_NUMPAD2 = 0x62;
+        public const byte VK_NUMPAD3 = 0x63;
+        public const byte VK_NUMPAD4 = 0x64;
+        public const byte VK_NUMPAD5 = 0x65;
+        public const byte VK_NUMPAD6 = 0x66;
+        public const byte VK_NUMPAD7 = 0x67;
+        public const byte VK_NUMPAD8 = 0x68;
+        public const byte VK_NUMPAD9 = 0x69;
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern short VkKeyScanEx(char ch, IntPtr dwhkl);
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct KEYBDINPUT
+        {
+            public ushort wVk;
+            public ushort wScan;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        // INPUT structure with explicit layout to handle union properly
+        [StructLayout(LayoutKind.Sequential)]
+        public struct INPUT
+        {
+            public int type;
+            public KEYBDINPUT ki;
+            // Padding to match the size of the largest union member (MOUSEINPUT)
+            public int padding1;
+            public int padding2;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        /// <summary>
+        /// Sends a Unicode character directly using SendInput with KEYEVENTF_UNICODE.
+        /// This bypasses keyboard layout translation and works with any Unicode character.
+        /// </summary>
+        public static void SendUnicodeChar(char c)
+        {
+            INPUT[] inputs = new INPUT[2];
+            int inputSize = Marshal.SizeOf(typeof(INPUT));
+
+            // Key down event
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].ki.wVk = 0;
+            inputs[0].ki.wScan = c;
+            inputs[0].ki.dwFlags = KEYEVENTF_UNICODE;
+            inputs[0].ki.time = 0;
+            inputs[0].ki.dwExtraInfo = IntPtr.Zero;
+
+            // Key up event
+            inputs[1].type = INPUT_KEYBOARD;
+            inputs[1].ki.wVk = 0;
+            inputs[1].ki.wScan = c;
+            inputs[1].ki.dwFlags = KEYEVENTF_UNICODE | KEYEVENTF_KEYUP;
+            inputs[1].ki.time = 0;
+            inputs[1].ki.dwExtraInfo = IntPtr.Zero;
+
+            SendInput(2, inputs, inputSize);
+        }
+
+        /// <summary>
+        /// Sends a key press/release using virtual key code AND scan code.
+        /// This works with browser-based VM consoles that need scan codes.
+        /// </summary>
+        private static void SendKeyWithScanCode(byte vk, bool keyUp)
+        {
+            ushort scanCode = (ushort)MapVirtualKey(vk, MAPVK_VK_TO_VSC);
+
+            INPUT[] inputs = new INPUT[1];
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].ki.wVk = vk;
+            inputs[0].ki.wScan = scanCode;
+            inputs[0].ki.dwFlags = keyUp ? KEYEVENTF_KEYUP : 0;
+            inputs[0].ki.time = 0;
+            inputs[0].ki.dwExtraInfo = IntPtr.Zero;
+
+            SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
+        }
+
+        /// <summary>
+        /// Sends a character using scan codes by trying all installed keyboard layouts.
+        /// Falls back to ALT+numpad for unmappable characters.
+        /// </summary>
+        public static void SendCharViaScanCode(char c)
+        {
+            int count = (int)GetKeyboardLayoutList(0, null);
+            if (count > 0)
+            {
+                IntPtr[] layouts = new IntPtr[count];
+                GetKeyboardLayoutList(count, layouts);
+
+                foreach (var hkl in layouts)
+                {
+                    short vkResult = VkKeyScanEx(c, hkl);
+
+                    // Check if mappable (not -1 in both bytes)
+                    if (!((vkResult & 0xFF) == 0xFF && ((vkResult >> 8) & 0xFF) == 0xFF))
+                    {
+                        byte vk = (byte)(vkResult & 0xFF);
+                        byte shiftState = (byte)((vkResult >> 8) & 0xFF);
+
+                        bool needShift = (shiftState & 1) != 0;
+                        bool needCtrl = (shiftState & 2) != 0;
+                        bool needAlt = (shiftState & 4) != 0;
+
+                        if (needShift) SendKeyWithScanCode(VK_LSHIFT, false);
+                        if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, false);
+                        if (needAlt) SendKeyWithScanCode((byte)VK_MENU, false);
+
+                        SendKeyWithScanCode(vk, false);
+                        SendKeyWithScanCode(vk, true);
+
+                        if (needAlt) SendKeyWithScanCode((byte)VK_MENU, true);
+                        if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, true);
+                        if (needShift) SendKeyWithScanCode(VK_LSHIFT, true);
+
+                        return;
+                    }
+                }
+            }
+
+            // Fallback to ALT codes for unmappable characters (works in VM consoles)
+            SendCharViaAltNumpad(c);
+        }
+
+        /// <summary>
+        /// Sends a character using ALT + numpad decimal code when possible (uses Alt+0nnn for ANSI),
+        /// otherwise falls back to KEYEVENTF_UNICODE via SendUnicodeChar.
+        /// </summary>
+        public static void SendCharViaAltNumpad(char c)
+        {
+            int code = c;
+            // If the code point is outside BMP (or invalid), fallback to Unicode send.
+            if (code > 0xFFFF || code < 0)
+            {
+                SendUnicodeChar(c);
+                return;
+            }
+
+            byte[] numpadKeys = { VK_NUMPAD0, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3, VK_NUMPAD4,
+                                  VK_NUMPAD5, VK_NUMPAD6, VK_NUMPAD7, VK_NUMPAD8, VK_NUMPAD9 };
+
+            // Try to map the character to the system ANSI code page (Encoding.Default).
+            // If it maps to a single ANSI byte and round-trips back to the same char,
+            // we can use Alt+0nnn (the leading 0 forces the Windows/ANSI code page).
+            var ansi = System.Text.Encoding.Default;
+            byte[] encoded = ansi.GetBytes(new char[] { c });
+
+            bool canUseAltAnsi = false;
+            int ansiValue = 0;
+            if (encoded.Length == 1)
+            {
+                // Verify it round-trips (some encodings use fallback '?')
+                char[] roundTrip = ansi.GetChars(encoded);
+                if (roundTrip.Length == 1 && roundTrip[0] == c)
+                {
+                    canUseAltAnsi = true;
+                    ansiValue = encoded[0]; // 0..255
+                }
+            }
+
+            if (canUseAltAnsi)
+            {
+                // Press ALT
+                SendKeyWithScanCode((byte)VK_MENU, false);
+
+                // Send leading '0' to force Windows/ANSI code page (Alt+0nnn).
+                SendKeyWithScanCode(numpadKeys[0], false);
+                SendKeyWithScanCode(numpadKeys[0], true);
+
+                // Send the decimal digits of the ANSI byte value (e.g. for 169 -> '1','6','9').
+                string digits = ansiValue.ToString();
+                foreach (char d in digits)
+                {
+                    int digit = d - '0';
+                    SendKeyWithScanCode(numpadKeys[digit], false);
+                    SendKeyWithScanCode(numpadKeys[digit], true);
+                }
+
+                // Release ALT (this should produce the character).
+                SendKeyWithScanCode((byte)VK_MENU, true);
+                return;
+            }
+
+            // If we couldn't map to ANSI (or it's >255), use the Unicode send fallback.
+            SendUnicodeChar(c);
+        }
+
+        #endregion
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetProcessDPIAware();
 
