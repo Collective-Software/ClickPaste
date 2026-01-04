@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore ClickPaste.sln
+
+    - name: Build Debug
+      run: msbuild ClickPaste.sln /p:Configuration=Debug /p:SkipCodeSigning=true
+
+    - name: Build Release
+      run: msbuild ClickPaste.sln /p:Configuration=Release /p:SkipCodeSigning=true
+
+    - name: Upload Debug artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ClickPaste-Debug-${{ github.sha }}
+        path: bin/Debug/
+        retention-days: 7
+
+    - name: Upload Release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ClickPaste-Release-${{ github.sha }}
+        path: bin/Release/
+        retention-days: 30
