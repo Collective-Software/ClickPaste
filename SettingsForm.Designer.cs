@@ -40,6 +40,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.DelayMS = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.hotKeyModeType = new System.Windows.Forms.RadioButton();
+            this.hotKeyModeTarget = new System.Windows.Forms.RadioButton();
             this.HotKey_Windows = new System.Windows.Forms.CheckBox();
             this.HotKey_Shift = new System.Windows.Forms.CheckBox();
             this.HotKey_Control = new System.Windows.Forms.CheckBox();
@@ -51,30 +53,39 @@
             this.confirmOverActive = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.confirmOver = new System.Windows.Forms.TextBox();
-            this.hotKeyModeTarget = new System.Windows.Forms.RadioButton();
-            this.hotKeyModeType = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // groupBox1
-            //
+            // 
             this.groupBox1.Controls.Add(this.Method_ScanCode);
             this.groupBox1.Controls.Add(this.Method_AutoIt);
             this.groupBox1.Controls.Add(this.Method_Forms);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(207, 70);
+            this.groupBox1.Size = new System.Drawing.Size(204, 89);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Typing Method:";
             // 
+            // Method_ScanCode
+            // 
+            this.Method_ScanCode.AutoSize = true;
+            this.Method_ScanCode.Location = new System.Drawing.Point(6, 65);
+            this.Method_ScanCode.Name = "Method_ScanCode";
+            this.Method_ScanCode.Size = new System.Drawing.Size(74, 17);
+            this.Method_ScanCode.TabIndex = 4;
+            this.Method_ScanCode.Tag = "3";
+            this.Method_ScanCode.Text = "SendInput";
+            this.Method_ScanCode.UseVisualStyleBackColor = true;
+            // 
             // Method_AutoIt
             // 
             this.Method_AutoIt.AutoSize = true;
-            this.Method_AutoIt.Location = new System.Drawing.Point(116, 19);
+            this.Method_AutoIt.Location = new System.Drawing.Point(6, 42);
             this.Method_AutoIt.Name = "Method_AutoIt";
             this.Method_AutoIt.Size = new System.Drawing.Size(81, 17);
             this.Method_AutoIt.TabIndex = 2;
@@ -94,25 +105,26 @@
             this.Method_Forms.Tag = "0";
             this.Method_Forms.Text = "Forms.SendKeys";
             this.Method_Forms.UseVisualStyleBackColor = true;
-            //
-            // Method_ScanCode
-            //
-            this.Method_ScanCode.AutoSize = true;
-            this.Method_ScanCode.Location = new System.Drawing.Point(6, 42);
-            this.Method_ScanCode.Name = "Method_ScanCode";
-            this.Method_ScanCode.Size = new System.Drawing.Size(165, 17);
-            this.Method_ScanCode.TabIndex = 4;
-            this.Method_ScanCode.Tag = "3";
-            this.Method_ScanCode.Text = "SendInput";
-            this.Method_ScanCode.UseVisualStyleBackColor = true;
-            //
+            // 
+            // versionLabel
+            // 
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.versionLabel.Location = new System.Drawing.Point(12, 271);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(100, 15);
+            this.versionLabel.TabIndex = 5;
+            this.versionLabel.Text = "v0.0.0";
+            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.startDelayMS);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.DelayMS);
-            this.groupBox2.Location = new System.Drawing.Point(15, 67);
+            this.groupBox2.Location = new System.Drawing.Point(12, 107);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(204, 79);
             this.groupBox2.TabIndex = 2;
@@ -153,6 +165,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.hotKeyModeType);
             this.groupBox3.Controls.Add(this.hotKeyModeTarget);
             this.groupBox3.Controls.Add(this.HotKey_Windows);
@@ -161,12 +174,36 @@
             this.groupBox3.Controls.Add(this.HotKey_Alt);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.HotKey_Letter);
-            this.groupBox3.Location = new System.Drawing.Point(15, 208);
+            this.groupBox3.Location = new System.Drawing.Point(227, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(204, 155);
+            this.groupBox3.Size = new System.Drawing.Size(153, 155);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Hot Key:";
+            // 
+            // hotKeyModeType
+            // 
+            this.hotKeyModeType.AutoSize = true;
+            this.hotKeyModeType.Location = new System.Drawing.Point(6, 124);
+            this.hotKeyModeType.Name = "hotKeyModeType";
+            this.hotKeyModeType.Size = new System.Drawing.Size(98, 17);
+            this.hotKeyModeType.TabIndex = 7;
+            this.hotKeyModeType.TabStop = true;
+            this.hotKeyModeType.Tag = "1";
+            this.hotKeyModeType.Text = "Just start typing";
+            this.hotKeyModeType.UseVisualStyleBackColor = true;
+            // 
+            // hotKeyModeTarget
+            // 
+            this.hotKeyModeTarget.AutoSize = true;
+            this.hotKeyModeTarget.Location = new System.Drawing.Point(6, 101);
+            this.hotKeyModeTarget.Name = "hotKeyModeTarget";
+            this.hotKeyModeTarget.Size = new System.Drawing.Size(122, 17);
+            this.hotKeyModeTarget.TabIndex = 6;
+            this.hotKeyModeTarget.TabStop = true;
+            this.hotKeyModeTarget.Tag = "0";
+            this.hotKeyModeTarget.Text = "Go into Target mode";
+            this.hotKeyModeTarget.UseVisualStyleBackColor = true;
             // 
             // HotKey_Windows
             // 
@@ -231,8 +268,9 @@
             // 
             // Done
             // 
+            this.Done.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Done.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Done.Location = new System.Drawing.Point(77, 386);
+            this.Done.Location = new System.Drawing.Point(159, 257);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
             this.Done.TabIndex = 5;
@@ -245,7 +283,7 @@
             this.groupBox4.Controls.Add(this.confirmOverActive);
             this.groupBox4.Controls.Add(this.label4);
             this.groupBox4.Controls.Add(this.confirmOver);
-            this.groupBox4.Location = new System.Drawing.Point(15, 152);
+            this.groupBox4.Location = new System.Drawing.Point(12, 192);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(204, 50);
             this.groupBox4.TabIndex = 3;
@@ -278,55 +316,19 @@
             this.confirmOver.Size = new System.Drawing.Size(47, 20);
             this.confirmOver.TabIndex = 2;
             // 
-            // hotKeyModeTarget
-            // 
-            this.hotKeyModeTarget.AutoSize = true;
-            this.hotKeyModeTarget.Location = new System.Drawing.Point(6, 101);
-            this.hotKeyModeTarget.Name = "hotKeyModeTarget";
-            this.hotKeyModeTarget.Size = new System.Drawing.Size(122, 17);
-            this.hotKeyModeTarget.TabIndex = 6;
-            this.hotKeyModeTarget.TabStop = true;
-            this.hotKeyModeTarget.Tag = "0";
-            this.hotKeyModeTarget.Text = "Go into Target mode";
-            this.hotKeyModeTarget.UseVisualStyleBackColor = true;
-            // 
-            // hotKeyModeType
-            // 
-            this.hotKeyModeType.AutoSize = true;
-            this.hotKeyModeType.Location = new System.Drawing.Point(6, 124);
-            this.hotKeyModeType.Name = "hotKeyModeType";
-            this.hotKeyModeType.Size = new System.Drawing.Size(98, 17);
-            this.hotKeyModeType.TabIndex = 7;
-            this.hotKeyModeType.TabStop = true;
-            this.hotKeyModeType.Tag = "1";
-            this.hotKeyModeType.Text = "Just start typing";
-            this.hotKeyModeType.UseVisualStyleBackColor = true;
-            //
-            // versionLabel
-            //
-            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.versionLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.versionLabel.Location = new System.Drawing.Point(12, 400);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(100, 15);
-            this.versionLabel.TabIndex = 5;
-            this.versionLabel.Text = "v0.0.0";
-            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
             // SettingsForm
-            //
+            // 
             this.AcceptButton = this.Done;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(231, 421);
-            this.Controls.Add(this.versionLabel);
+            this.ClientSize = new System.Drawing.Size(392, 292);
             this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.Done);
+            this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.Done);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
