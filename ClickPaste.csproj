@@ -27,7 +27,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>
@@ -46,8 +47,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoItX3.Assembly">
-      <HintPath>..\..\..\..\Program Files (x86)\AutoIt3\AutoItX\AutoItX3.Assembly.dll</HintPath>
+      <HintPath>AutoItX3.Assembly.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -97,37 +100,41 @@
     <None Include="Resources\Target.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Costura.Fody">
+      <Version>6.0.0</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="MouseKeyHook">
-      <Version>5.6.0</Version>
+      <Version>5.7.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TargetDark.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AutoItX3.Assembly.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AutoItX3.Assembly.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AutoItX3.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AutoItX3_x64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <!-- These DLLs are embedded by Costura.Fody for single-file output -->
+    <None Include="AutoItX3.Assembly.dll" />
+    <None Include="AutoItX3.Assembly.xml" />
+    <None Include="AutoItX3.dll" />
+    <None Include="AutoItX3_x64.dll" />
     <Content Include="AutoIt_License.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Typing.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+
+  <!-- Clean up XML documentation files from output -->
+  <Target Name="CleanupOutput" AfterTargets="Build">
+    <Delete Files="$(OutputPath)AutoItX3.Assembly.xml" ContinueOnError="true" />
+    <Delete Files="$(OutputPath)Gma.System.MouseKeyHook.xml" ContinueOnError="true" />
+  </Target>
+
+  <!-- Code signing: disabled in CI builds (set SkipCodeSigning=true) -->
+  <PropertyGroup Condition="'$(SkipCodeSigning)' != 'true'">
     <PostBuildEvent>if $(ConfigurationName) == Release $(SolutionDir)\sign.bat $(TargetDir)\$(TargetFileName) $(TargetPath)</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
   </PropertyGroup>
 </Project>
