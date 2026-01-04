@@ -9,6 +9,66 @@ namespace ClickPaste
 {
     class Native
     {
+        #region Windows 10/11 Dark Mode API
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+        /// <summary>
+        /// Enables dark mode for a window's title bar on Windows 10/11.
+        /// </summary>
+        public static bool SetDarkModeForWindow(IntPtr handle, bool enabled)
+        {
+            if (Environment.OSVersion.Version.Major < 10) return false;
+
+            int attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+            // Try the newer attribute first, fall back to pre-20H1 if it fails
+            int value = enabled ? 1 : 0;
+            int result = DwmSetWindowAttribute(handle, attribute, ref value, sizeof(int));
+            if (result != 0)
+            {
+                attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+                result = DwmSetWindowAttribute(handle, attribute, ref value, sizeof(int));
+            }
+            return result == 0;
+        }
+
+        // uxtheme.dll ordinal 135 - SetPreferredAppMode
+        [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern int SetPreferredAppMode(int preferredAppMode);
+
+        // uxtheme.dll ordinal 136 - FlushMenuThemes
+        [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern void FlushMenuThemes();
+
+        private const int AllowDark = 1;
+        private const int ForceDark = 2;
+        private const int ForceLight = 3;
+        private const int Max = 4;
+
+        /// <summary>
+        /// Enables system-wide dark mode for context menus on Windows 10/11.
+        /// Must be called before any menus are created.
+        /// </summary>
+        public static void SetAppDarkMode(bool dark)
+        {
+            if (Environment.OSVersion.Version.Major < 10) return;
+            try
+            {
+                SetPreferredAppMode(dark ? AllowDark : ForceLight);
+                FlushMenuThemes();
+            }
+            catch
+            {
+                // Ignore errors on older Windows versions
+            }
+        }
+
+        #endregion
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetProcessDPIAware();
 

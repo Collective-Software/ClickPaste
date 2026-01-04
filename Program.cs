@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Media;
 using System.Reflection;
@@ -12,6 +13,178 @@ using System.Windows.Forms;
 
 namespace ClickPaste
 {
+    /// <summary>
+    /// Provides Windows dark/light theme detection and colors.
+    /// </summary>
+    public static class ThemeHelper
+    {
+        // Windows 11 dark mode colors
+        public static readonly Color DarkBackground = Color.FromArgb(32, 32, 32);      // #202020
+        public static readonly Color DarkSurface = Color.FromArgb(43, 43, 43);         // #2B2B2B
+        public static readonly Color DarkBorder = Color.FromArgb(60, 60, 60);          // #3C3C3C
+        public static readonly Color DarkText = Color.FromArgb(255, 255, 255);         // #FFFFFF
+        public static readonly Color DarkTextSecondary = Color.FromArgb(180, 180, 180);// #B4B4B4
+
+        public static event EventHandler ThemeChanged;
+
+        static ThemeHelper()
+        {
+            SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
+        }
+
+        private static void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+        {
+            if (e.Category == UserPreferenceCategory.General)
+            {
+                ThemeChanged?.Invoke(null, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if apps should use dark mode.
+        /// </summary>
+        public static bool IsDarkMode
+        {
+            get
+            {
+                using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                {
+                    var value = key?.GetValue("AppsUseLightTheme")?.RegToUint();
+                    return value.HasValue && value.Value == 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the system tray/taskbar is dark.
+        /// </summary>
+        public static bool IsSystemDark
+        {
+            get
+            {
+                using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                {
+                    var value = key?.GetValue("SystemUsesLightTheme")?.RegToUint();
+                    return !value.HasValue || value.Value == 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies dark or light theme colors to a form and all its controls.
+        /// </summary>
+        public static void ApplyTheme(Control control, bool dark)
+        {
+            if (dark)
+            {
+                if (control is Form)
+                {
+                    control.BackColor = DarkBackground;
+                    control.ForeColor = DarkText;
+                }
+                else if (control is TextBox textBox)
+                {
+                    textBox.BackColor = DarkBackground;
+                    textBox.ForeColor = DarkText;
+                    textBox.BorderStyle = BorderStyle.FixedSingle;
+                }
+                else if (control is GroupBox groupBox)
+                {
+                    groupBox.BackColor = DarkBackground;
+                    groupBox.ForeColor = DarkText;
+                }
+                else if (control is Button button)
+                {
+                    button.BackColor = DarkSurface;
+                    button.ForeColor = DarkText;
+                    button.FlatStyle = FlatStyle.Flat;
+                    button.FlatAppearance.BorderColor = DarkBorder;
+                }
+                else if (control is Label label)
+                {
+                    // Labels inherit parent background
+                    label.BackColor = Color.Transparent;
+                    label.ForeColor = DarkText;
+                }
+                else if (control is RadioButton || control is CheckBox)
+                {
+                    control.BackColor = Color.Transparent;
+                    control.ForeColor = DarkText;
+                }
+                else
+                {
+                    control.BackColor = DarkBackground;
+                    control.ForeColor = DarkText;
+                }
+            }
+            else
+            {
+                control.BackColor = SystemColors.Control;
+                control.ForeColor = SystemColors.ControlText;
+
+                if (control is TextBox textBox)
+                {
+                    textBox.BackColor = SystemColors.Window;
+                    textBox.BorderStyle = BorderStyle.Fixed3D;
+                }
+                else if (control is Button button)
+                {
+                    button.BackColor = SystemColors.Control;
+                    button.FlatStyle = FlatStyle.System;
+                    button.UseVisualStyleBackColor = true;
+                }
+            }
+
+            foreach (Control child in control.Controls)
+            {
+                ApplyTheme(child, dark);
+            }
+        }
+
+        /// <summary>
+        /// Gets a dark mode renderer for ContextMenuStrip if dark mode is enabled.
+        /// </summary>
+        public static ToolStripRenderer GetMenuRenderer(bool dark)
+        {
+            return dark ? new DarkMenuRenderer() : new ToolStripProfessionalRenderer();
+        }
+    }
+
+    /// <summary>
+    /// Custom renderer for dark mode context menus.
+    /// </summary>
+    public class DarkMenuRenderer : ToolStripProfessionalRenderer
+    {
+        public DarkMenuRenderer() : base(new DarkMenuColors()) { }
+
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            e.TextColor = ThemeHelper.DarkText;
+            base.OnRenderItemText(e);
+        }
+
+        protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+        {
+            e.ArrowColor = ThemeHelper.DarkText;
+            base.OnRenderArrow(e);
+        }
+    }
+
+    public class DarkMenuColors : ProfessionalColorTable
+    {
+        public override Color MenuItemSelected => ThemeHelper.DarkSurface;
+        public override Color MenuItemSelectedGradientBegin => ThemeHelper.DarkSurface;
+        public override Color MenuItemSelectedGradientEnd => ThemeHelper.DarkSurface;
+        public override Color MenuItemBorder => ThemeHelper.DarkBorder;
+        public override Color MenuBorder => ThemeHelper.DarkBorder;
+        public override Color ToolStripDropDownBackground => ThemeHelper.DarkBackground;
+        public override Color ImageMarginGradientBegin => ThemeHelper.DarkBackground;
+        public override Color ImageMarginGradientMiddle => ThemeHelper.DarkBackground;
+        public override Color ImageMarginGradientEnd => ThemeHelper.DarkBackground;
+        public override Color SeparatorDark => ThemeHelper.DarkBorder;
+        public override Color SeparatorLight => ThemeHelper.DarkBorder;
+    }
+
     static class Program
     {
         /// <summary>
@@ -34,6 +207,9 @@ namespace ClickPaste
             Native.SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Enable dark mode for context menus (must be before any menus are created)
+            Native.SetAppDarkMode(ThemeHelper.IsDarkMode);
 
             // try to make sure we don't die leaving the cursor in "+" state
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

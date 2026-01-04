@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,6 +19,15 @@ namespace ClickPaste
         public SettingsForm()
         {
             InitializeComponent();
+
+            // Apply theme (colors, icon, and dark titlebar)
+            bool dark = ThemeHelper.IsDarkMode;
+            ThemeHelper.ApplyTheme(this, dark);
+            Native.SetDarkModeForWindow(this.Handle, dark);
+
+            // Set icon to match theme (light icon for dark mode, dark icon for light mode)
+            this.Icon = dark ? Properties.Resources.Target : Properties.Resources.TargetDark;
+
             _methods = new RadioButton[2];
             _methods[0] = Method_Forms;
             _methods[1] = Method_AutoIt;
