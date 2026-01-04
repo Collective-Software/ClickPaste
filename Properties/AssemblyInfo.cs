@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ClickPaste")]
-[assembly: AssemblyCopyright("Copyright © 2025 Collective Software, LLC")]
+[assembly: AssemblyCopyright("Copyright © 2026 Collective Software, LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
