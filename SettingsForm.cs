@@ -28,6 +28,10 @@ namespace ClickPaste
             // Set icon to match theme (light icon for dark mode, dark icon for light mode)
             this.Icon = dark ? Properties.Resources.Target : Properties.Resources.TargetDark;
 
+            // Set version label
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            versionLabel.Text = $"v{version.Major}.{version.Minor}.{version.Build}";
+
             _methods = new RadioButton[3];
             _methods[0] = Method_Forms;
             _methods[1] = Method_AutoIt;

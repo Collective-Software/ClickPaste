@@ -33,6 +33,7 @@
             this.Method_ScanCode = new System.Windows.Forms.RadioButton();
             this.Method_AutoIt = new System.Windows.Forms.RadioButton();
             this.Method_Forms = new System.Windows.Forms.RadioButton();
+            this.versionLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.startDelayMS = new System.Windows.Forms.TextBox();
@@ -300,14 +301,27 @@
             this.hotKeyModeType.Tag = "1";
             this.hotKeyModeType.Text = "Just start typing";
             this.hotKeyModeType.UseVisualStyleBackColor = true;
-            // 
+            //
+            // versionLabel
+            //
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.versionLabel.Location = new System.Drawing.Point(12, 400);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(100, 15);
+            this.versionLabel.TabIndex = 5;
+            this.versionLabel.Text = "v0.0.0";
+            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            //
             // SettingsForm
-            // 
+            //
             this.AcceptButton = this.Done;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(231, 421);
+            this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.Done);
             this.Controls.Add(this.groupBox3);
@@ -358,5 +372,6 @@
         private System.Windows.Forms.RadioButton hotKeyModeType;
         private System.Windows.Forms.RadioButton hotKeyModeTarget;
         private System.Windows.Forms.RadioButton Method_ScanCode;
+        private System.Windows.Forms.Label versionLabel;
     }
 }
