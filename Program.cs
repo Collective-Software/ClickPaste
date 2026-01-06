@@ -88,6 +88,12 @@ namespace ClickPaste
                     textBox.ForeColor = DarkText;
                     textBox.BorderStyle = BorderStyle.FixedSingle;
                 }
+                else if (control is DarkGroupBox darkGroupBox)
+                {
+                    darkGroupBox.BackColor = DarkBackground;
+                    darkGroupBox.ForeColor = DarkText;
+                    darkGroupBox.DarkMode = true;
+                }
                 else if (control is GroupBox groupBox)
                 {
                     groupBox.BackColor = DarkBackground;
@@ -122,7 +128,11 @@ namespace ClickPaste
                 control.BackColor = SystemColors.Control;
                 control.ForeColor = SystemColors.ControlText;
 
-                if (control is TextBox textBox)
+                if (control is DarkGroupBox darkGroupBox)
+                {
+                    darkGroupBox.DarkMode = false;
+                }
+                else if (control is TextBox textBox)
                 {
                     textBox.BackColor = SystemColors.Window;
                     textBox.BorderStyle = BorderStyle.Fixed3D;
@@ -193,10 +203,9 @@ namespace ClickPaste
         [STAThread]
         static void Main()
         {
-            if(Properties.Settings.Default.RunElevated)
-            {
+            // TODO: Implement elevation support if RunElevated setting is true
+            // if (Properties.Settings.Default.RunElevated) { ... }
 
-            }
             // only run one of these at a time!
             //https://stackoverflow.com/questions/502303/how-do-i-programmatically-get-the-guid-of-an-application-in-net2-0/502323#502323
             string assyGuid = Assembly.GetExecutingAssembly().GetCustomAttribute<GuidAttribute>().Value.ToUpper();
@@ -258,13 +267,18 @@ namespace ClickPaste
     {
         NotifyIcon _notify = null;
         IKeyboardMouseEvents _hook = null;
-        MenuItem[] _typeMethods; // these are just sequential 0-based integers so don't need to map them like...
-        Dictionary<int, MenuItem> _keyDelayMS;// we do here
         int? _usingHotKey;
         EventHandler<HotKeyEventArgs> _currentHotKeyHandler = null;
         CancellationTokenSource _stop = new CancellationTokenSource();
 
         bool _settingsOpen = false;
+
+        // Maximum time to wait for modifier keys to be released (prevents infinite loop)
+        private const int MaxModifierWaitMs = 5000;
+        private const int ModifierPollIntervalMs = 50;
+
+        // Base delay before typing starts to allow target window to gain focus
+        private const int BaseStartDelayMs = 100;
         public TrayApplicationContext()
         {
             StartHotKey();
@@ -299,10 +313,12 @@ namespace ClickPaste
         private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
         {
             StopHotKey();
-            // wait until control keys are no longer pressed
-            while (Native.IsModifierKeyPressed())
+            // Wait until modifier keys are released, with timeout to prevent infinite loop
+            int waited = 0;
+            while (Native.IsModifierKeyPressed() && waited < MaxModifierWaitMs)
             {
-                Thread.Sleep(300);
+                Thread.Sleep(ModifierPollIntervalMs);
+                waited += ModifierPollIntervalMs;
             }
             switch((HotKeyMode) Properties.Settings.Default.HotKeyMode)
             {
@@ -382,11 +398,23 @@ namespace ClickPaste
         }
         void StartTyping()
         {
-            var clip = Clipboard.GetText();
+            // Get clipboard text with exception handling
+            string clip;
+            try
+            {
+                clip = Clipboard.GetText();
+            }
+            catch (System.Runtime.InteropServices.ExternalException)
+            {
+                // Clipboard is locked by another application
+                SystemSounds.Beep.Play();
+                StartHotKey();
+                return;
+            }
 
             // whatever window is under focus right now should be the target
 
-            if (Properties.Settings.Default.Confirm && clip.Length > Properties.Settings.Default.ConfirmOver)
+            if (Properties.Settings.Default.Confirm && clip != null && clip.Length > Properties.Settings.Default.ConfirmOver)
             {
                 SystemSounds.Beep.Play();
                 var w = Native.GetForegroundWindow();
@@ -398,62 +426,84 @@ namespace ClickPaste
                 }
                 Native.SetForegroundWindow(w);
             }
-            _stop = new CancellationTokenSource();
+
+            // Create cancellation token source and capture token before starting task
+            // to avoid race condition if StartTyping is called again rapidly
+            var cts = new CancellationTokenSource();
+            _stop = cts;
+            var cancel = cts.Token;
+
             Task.Run(() =>
             {
-                // check if it's my window
-                //IntPtr hwnd = Native.WindowFromPoint(e.X, e.Y);
-                // ... we don't have a window yet
-                if (string.IsNullOrEmpty(clip))
+                Icon icon = null;
+                try
                 {
-                    // nothing to paste
+                    // check if it's my window
+                    //IntPtr hwnd = Native.WindowFromPoint(e.X, e.Y);
+                    // ... we don't have a window yet
+                    if (string.IsNullOrEmpty(clip))
+                    {
+                        // nothing to paste
+                        SystemSounds.Beep.Play();
+                    }
+                    else
+                    {
+                        var traySize = SystemInformation.SmallIconSize;
+                        icon = _notify.Icon;
+                        _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
+                        int startDelayMS = Properties.Settings.Default.StartDelayMS;
+                        Thread.Sleep(BaseStartDelayMs + startDelayMS);
+                        StartHotKeyEscape();
+                        int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
+                        var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
+                        IList<string> list = PrepareKeystrokes(clip, method);
+
+                        if (TypeMethod.AutoIt_Send == method)
+                        {
+                            AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
+                        }
+                        foreach (var s in list)
+                        {
+                            switch (method)
+                            {
+
+                                case TypeMethod.AutoIt_Send:
+                                    AutoIt.AutoItX.Send(s, 1);
+                                    break;
+                                case TypeMethod.Forms_SendKeys:
+                                    SendKeys.SendWait(s);
+                                    break;
+                                case TypeMethod.SendInput_ScanCode:
+                                    // Send via scan codes with ALT code fallback - works with VM consoles
+                                    foreach (char c in s)
+                                    {
+                                        Native.SendCharViaScanCode(c);
+                                    }
+                                    break;
+                            }
+                            Thread.Sleep(keyDelayMS);
+                            if (cancel.IsCancellationRequested)
+                            {
+                                break;//stop typing early
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log or handle the exception - at minimum play error sound
+                    System.Diagnostics.Debug.WriteLine($"ClickPaste error: {ex.Message}");
                     SystemSounds.Beep.Play();
                 }
-                else
+                finally
                 {
-                    var cancel = _stop.Token;
-                    var traySize = SystemInformation.SmallIconSize;
-                    var icon = _notify.Icon;
-                    _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
-                    int startDelayMS = Properties.Settings.Default.StartDelayMS;
-                    Thread.Sleep(100 + startDelayMS);
-                    StartHotKeyEscape();
-                    int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
-                    var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
-                    IList<string> list = PrepareKeystrokes(clip, method);
-
-                    if (TypeMethod.AutoIt_Send == method)
+                    // Always restore icon if it was changed
+                    if (icon != null)
                     {
-                        AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
+                        _notify.Icon = icon;
                     }
-                    foreach (var s in list)
-                    {
-                        switch (method)
-                        {
-
-                            case TypeMethod.AutoIt_Send:
-                                AutoIt.AutoItX.Send(s, 1);
-                                break;
-                            case TypeMethod.Forms_SendKeys:
-                                SendKeys.SendWait(s);
-                                break;
-                            case TypeMethod.SendInput_ScanCode:
-                                // Send via scan codes with ALT code fallback - works with VM consoles
-                                foreach (char c in s)
-                                {
-                                    Native.SendCharViaScanCode(c);
-                                }
-                                break;
-                        }
-                        Thread.Sleep(keyDelayMS);
-                        if (cancel.IsCancellationRequested)
-                        {
-                            break;//stop typing early
-                        }
-                    }
-                    _notify.Icon = icon;
+                    StartHotKey();// resume normal hotkey listening
                 }
-                StartHotKey();// resume normal hotkey listening
             });
 
         }
@@ -484,8 +534,12 @@ namespace ClickPaste
             {
                 try
                 {
-                    Keys HotKey = (Keys)Enum.Parse(typeof(Keys), hotkeyLetter);
-                    _usingHotKey = HotKeyManager.RegisterHotKey(HotKey, (KeyModifiers)Properties.Settings.Default.HotKeyModifier);
+                    if (!Enum.TryParse(hotkeyLetter, out Keys hotKey))
+                    {
+                        MessageBox.Show($"Invalid hot key: {hotkeyLetter}");
+                        return;
+                    }
+                    _usingHotKey = HotKeyManager.RegisterHotKey(hotKey, (KeyModifiers)Properties.Settings.Default.HotKeyModifier);
                     _currentHotKeyHandler = new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
                     HotKeyManager.HotKeyPressed += _currentHotKeyHandler;
                 }

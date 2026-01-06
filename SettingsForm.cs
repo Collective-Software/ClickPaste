@@ -101,22 +101,22 @@ namespace ClickPaste
             {
                 if (method.Checked)
                 {
-                    Properties.Settings.Default.TypeMethod = int.Parse(method.Tag.ToString()); ;
+                    Properties.Settings.Default.TypeMethod = int.Parse(method.Tag.ToString());
                 }
             }
             int delay;
-            if (int.TryParse(DelayMS.Text, out delay))
+            if (int.TryParse(DelayMS.Text, out delay) && delay >= 0)
             {
                 Properties.Settings.Default.KeyDelayMS = delay;
             }
             int startDelay;
-            if (int.TryParse(startDelayMS.Text, out startDelay))
+            if (int.TryParse(startDelayMS.Text, out startDelay) && startDelay >= 0)
             {
                 Properties.Settings.Default.StartDelayMS = startDelay;
             }
             Properties.Settings.Default.Confirm = confirmOverActive.Checked;
             int co;
-            if (int.TryParse(confirmOver.Text, out co))
+            if (int.TryParse(confirmOver.Text, out co) && co >= 0)
             {
                 Properties.Settings.Default.ConfirmOver = co;
             }
@@ -136,7 +136,7 @@ namespace ClickPaste
             {
                 if (mode.Checked)
                 {
-                    Properties.Settings.Default.HotKeyMode = int.Parse(mode.Tag.ToString()); ;
+                    Properties.Settings.Default.HotKeyMode = int.Parse(mode.Tag.ToString());
                 }
             }
             Properties.Settings.Default.Save();

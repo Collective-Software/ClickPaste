@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new ClickPaste.DarkGroupBox();
             this.Method_ScanCode = new System.Windows.Forms.RadioButton();
             this.Method_AutoIt = new System.Windows.Forms.RadioButton();
             this.Method_Forms = new System.Windows.Forms.RadioButton();
             this.versionLabel = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new ClickPaste.DarkGroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.startDelayMS = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.DelayMS = new System.Windows.Forms.TextBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new ClickPaste.DarkGroupBox();
             this.hotKeyModeType = new System.Windows.Forms.RadioButton();
             this.hotKeyModeTarget = new System.Windows.Forms.RadioButton();
             this.HotKey_Windows = new System.Windows.Forms.CheckBox();
@@ -49,7 +49,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.HotKey_Letter = new System.Windows.Forms.TextBox();
             this.Done = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new ClickPaste.DarkGroupBox();
             this.confirmOverActive = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.confirmOver = new System.Windows.Forms.TextBox();
@@ -174,17 +174,17 @@
             this.groupBox3.Controls.Add(this.HotKey_Alt);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.HotKey_Letter);
-            this.groupBox3.Location = new System.Drawing.Point(227, 12);
+            this.groupBox3.Location = new System.Drawing.Point(222, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(153, 155);
+            this.groupBox3.Size = new System.Drawing.Size(158, 174);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Hot Key:";
-            // 
+            //
             // hotKeyModeType
-            // 
+            //
             this.hotKeyModeType.AutoSize = true;
-            this.hotKeyModeType.Location = new System.Drawing.Point(6, 124);
+            this.hotKeyModeType.Location = new System.Drawing.Point(6, 147);
             this.hotKeyModeType.Name = "hotKeyModeType";
             this.hotKeyModeType.Size = new System.Drawing.Size(98, 17);
             this.hotKeyModeType.TabIndex = 7;
@@ -192,11 +192,11 @@
             this.hotKeyModeType.Tag = "1";
             this.hotKeyModeType.Text = "Just start typing";
             this.hotKeyModeType.UseVisualStyleBackColor = true;
-            // 
+            //
             // hotKeyModeTarget
-            // 
+            //
             this.hotKeyModeTarget.AutoSize = true;
-            this.hotKeyModeTarget.Location = new System.Drawing.Point(6, 101);
+            this.hotKeyModeTarget.Location = new System.Drawing.Point(6, 124);
             this.hotKeyModeTarget.Name = "hotKeyModeTarget";
             this.hotKeyModeTarget.Size = new System.Drawing.Size(122, 17);
             this.hotKeyModeTarget.TabIndex = 6;
@@ -277,41 +277,42 @@
             this.Done.Text = "Done";
             this.Done.UseVisualStyleBackColor = true;
             this.Done.Click += new System.EventHandler(this.Done_Click);
-            // 
+            //
             // groupBox4
-            // 
+            //
             this.groupBox4.Controls.Add(this.confirmOverActive);
             this.groupBox4.Controls.Add(this.label4);
             this.groupBox4.Controls.Add(this.confirmOver);
             this.groupBox4.Location = new System.Drawing.Point(12, 192);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(204, 50);
+            this.groupBox4.Size = new System.Drawing.Size(204, 56);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
-            // 
+            this.groupBox4.Text = "Confirmation:";
+            //
             // confirmOverActive
-            // 
+            //
             this.confirmOverActive.AutoSize = true;
-            this.confirmOverActive.Location = new System.Drawing.Point(6, 0);
+            this.confirmOverActive.Location = new System.Drawing.Point(6, 16);
             this.confirmOverActive.Name = "confirmOverActive";
             this.confirmOverActive.Size = new System.Drawing.Size(159, 17);
             this.confirmOverActive.TabIndex = 1;
             this.confirmOverActive.Text = "Confirm if pasting more than:";
             this.confirmOverActive.UseVisualStyleBackColor = true;
             this.confirmOverActive.CheckedChanged += new System.EventHandler(this.confirmOverActive_CheckedChanged);
-            // 
+            //
             // label4
-            // 
+            //
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(59, 20);
+            this.label4.Location = new System.Drawing.Point(59, 36);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 6;
             this.label4.Text = "keystrokes";
-            // 
+            //
             // confirmOver
-            // 
-            this.confirmOver.Location = new System.Drawing.Point(6, 17);
+            //
+            this.confirmOver.Location = new System.Drawing.Point(6, 33);
             this.confirmOver.Name = "confirmOver";
             this.confirmOver.Size = new System.Drawing.Size(47, 20);
             this.confirmOver.TabIndex = 2;
@@ -351,13 +352,13 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
+        private ClickPaste.DarkGroupBox groupBox1;
         private System.Windows.Forms.RadioButton Method_AutoIt;
         private System.Windows.Forms.RadioButton Method_Forms;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private ClickPaste.DarkGroupBox groupBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox DelayMS;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private ClickPaste.DarkGroupBox groupBox3;
         private System.Windows.Forms.TextBox HotKey_Letter;
         private System.Windows.Forms.CheckBox HotKey_Alt;
         private System.Windows.Forms.Label label2;
@@ -367,7 +368,7 @@
         private System.Windows.Forms.Button Done;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox startDelayMS;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private ClickPaste.DarkGroupBox groupBox4;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox confirmOver;
         private System.Windows.Forms.CheckBox confirmOverActive;
