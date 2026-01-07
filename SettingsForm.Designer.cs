@@ -53,10 +53,13 @@
             this.confirmOverActive = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.confirmOver = new System.Windows.Forms.TextBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.targetLayoutCombo = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -316,13 +319,34 @@
             this.confirmOver.Size = new System.Drawing.Size(47, 20);
             this.confirmOver.TabIndex = 2;
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.targetLayoutCombo);
+            this.groupBox5.Location = new System.Drawing.Point(227, 173);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(153, 52);
+            this.groupBox5.TabIndex = 6;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Target Keyboard Layout:";
+            // 
+            // targetLayoutCombo
+            // 
+            this.targetLayoutCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.targetLayoutCombo.FormattingEnabled = true;
+            this.targetLayoutCombo.Location = new System.Drawing.Point(6, 19);
+            this.targetLayoutCombo.Name = "targetLayoutCombo";
+            this.targetLayoutCombo.Size = new System.Drawing.Size(141, 21);
+            this.targetLayoutCombo.TabIndex = 0;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.Done;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(392, 292);
+            this.ClientSize = new System.Drawing.Size(392, 300);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.groupBox3);
@@ -345,6 +369,7 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -375,5 +400,7 @@
         private System.Windows.Forms.RadioButton hotKeyModeTarget;
         private System.Windows.Forms.RadioButton Method_ScanCode;
         private System.Windows.Forms.Label versionLabel;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.ComboBox targetLayoutCombo;
     }
 }

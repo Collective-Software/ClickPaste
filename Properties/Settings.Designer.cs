@@ -130,5 +130,17 @@ namespace ClickPaste.Properties {
                 this["HotKeyMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TargetKeyboardLayout {
+            get {
+                return ((string)(this["TargetKeyboardLayout"]));
+            }
+            set {
+                this["TargetKeyboardLayout"] = value;
+            }
+        }
     }
 }
