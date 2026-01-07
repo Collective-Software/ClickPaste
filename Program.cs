@@ -401,6 +401,7 @@ namespace ClickPaste
             _stop = new CancellationTokenSource();
             Task.Run(() =>
             {
+                System.Drawing.Icon originalIcon = null;
                 try
                 {
                     Native.Log("Task.Run started");
@@ -412,7 +413,7 @@ namespace ClickPaste
                     {
                         var cancel = _stop.Token;
                         var traySize = SystemInformation.SmallIconSize;
-                        var icon = _notify.Icon;
+                        originalIcon = _notify.Icon;
                         _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
                         int startDelayMS = Properties.Settings.Default.StartDelayMS;
                         Thread.Sleep(100 + startDelayMS);
@@ -453,14 +454,18 @@ namespace ClickPaste
                                 break;
                             }
                         }
-                        _notify.Icon = icon;
                     }
                 }
                 catch (Exception ex)
                 {
                     Native.Log($"EXCEPTION in typing task: {ex.Message}\n{ex.StackTrace}");
                 }
-                StartHotKey();
+                finally
+                {
+                    if (originalIcon != null)
+                        _notify.Icon = originalIcon;
+                    StartHotKey();
+                }
             });
 
         }
