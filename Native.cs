@@ -398,10 +398,9 @@ namespace ClickPaste
             {
                 Log($"SendCharViaScanCode: '{c}' (0x{((int)c):X4}), targetLayoutId='{_targetLayoutId}'");
                 
-                bool isEnglish = _targetLayoutId == "00000409" || _targetLayoutId == "00000809";
-                if (isEnglish && USKeyboardMap.TryGetValue(c, out var mapping))
+                if (_targetLayoutId == "00000409" && USKeyboardMap.TryGetValue(c, out var mapping))
                 {
-                    Log($"Using English scan code: 0x{mapping.scanCode:X2}, shift={mapping.shift}");
+                    Log($"Using US scan code: 0x{mapping.scanCode:X2}, shift={mapping.shift}");
                     if (mapping.shift) SendScanCode(0x2A, false);
                     SendScanCode(mapping.scanCode, false);
                     SendScanCode(mapping.scanCode, true);

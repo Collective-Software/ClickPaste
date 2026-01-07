@@ -57,10 +57,10 @@ namespace ClickPaste
                 mode.Checked = (Properties.Settings.Default.HotKeyMode == int.Parse(mode.Tag.ToString()));
             }
 
-            _layouts = Native.GetAvailableKeyboardLayouts();
-            _layouts.Remove("00000409");
-            _layouts.Remove("00000809");
-            _layouts["00000809"] = "English";
+            _layouts = new Dictionary<string, string>
+            {
+                { "00000409", "English (US)" }
+            };
             targetLayoutCombo.Items.Add("(None - use local)");
             foreach (var kv in _layouts)
                 targetLayoutCombo.Items.Add(kv.Value);
