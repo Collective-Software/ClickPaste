@@ -14,6 +14,7 @@ namespace ClickPaste
         static bool _useEnglishUSTable = false;
         static string _logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "clickpaste.log");
 
+        [System.Diagnostics.Conditional("DEBUG")]
         public static void Log(string msg)
         {
             try
