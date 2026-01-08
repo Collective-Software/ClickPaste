@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -10,171 +6,6 @@ namespace ClickPaste
 {
     class Native
     {
-        static string _targetLayoutId = null;
-        static bool _useEnglishUSTable = false;
-        static string _logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "clickpaste.log");
-
-        [System.Diagnostics.Conditional("DEBUG")]
-        public static void Log(string msg)
-        {
-            try
-            {
-                File.AppendAllText(_logPath, $"{DateTime.Now:HH:mm:ss.fff} {msg}\n");
-            }
-            catch { }
-        }
-
-        public static void SetTargetKeyboardLayout(string layoutId)
-        {
-            Log($"SetTargetKeyboardLayout called with: '{layoutId}'");
-            _targetLayoutId = layoutId;
-            _useEnglishUSTable = !string.IsNullOrEmpty(layoutId) && 
-                (layoutId.Equals("00000409", StringComparison.OrdinalIgnoreCase) ||
-                 layoutId.Contains("409"));
-            Log($"_targetLayoutId={_targetLayoutId}, _useEnglishUSTable={_useEnglishUSTable}");
-        }
-
-        public static bool IsEnglishUSTableActive => _useEnglishUSTable;
-
-        struct KeyMapping
-        {
-            public ushort ScanCode;
-            public bool Shift;
-            public KeyMapping(ushort sc, bool s = false) { ScanCode = sc; Shift = s; }
-        }
-
-        static Dictionary<char, KeyMapping> _englishUS = BuildEnglishUSMap();
-
-        static Dictionary<char, KeyMapping> BuildEnglishUSMap()
-        {
-            var m = new Dictionary<char, KeyMapping>();
-            // Row 1: `1234567890-=
-            m['`'] = new KeyMapping(0x29); m['~'] = new KeyMapping(0x29, true);
-            m['1'] = new KeyMapping(0x02); m['!'] = new KeyMapping(0x02, true);
-            m['2'] = new KeyMapping(0x03); m['@'] = new KeyMapping(0x03, true);
-            m['3'] = new KeyMapping(0x04); m['#'] = new KeyMapping(0x04, true);
-            m['4'] = new KeyMapping(0x05); m['$'] = new KeyMapping(0x05, true);
-            m['5'] = new KeyMapping(0x06); m['%'] = new KeyMapping(0x06, true);
-            m['6'] = new KeyMapping(0x07); m['^'] = new KeyMapping(0x07, true);
-            m['7'] = new KeyMapping(0x08); m['&'] = new KeyMapping(0x08, true);
-            m['8'] = new KeyMapping(0x09); m['*'] = new KeyMapping(0x09, true);
-            m['9'] = new KeyMapping(0x0A); m['('] = new KeyMapping(0x0A, true);
-            m['0'] = new KeyMapping(0x0B); m[')'] = new KeyMapping(0x0B, true);
-            m['-'] = new KeyMapping(0x0C); m['_'] = new KeyMapping(0x0C, true);
-            m['='] = new KeyMapping(0x0D); m['+'] = new KeyMapping(0x0D, true);
-            // Row 2: qwertyuiop[]
-            m['q'] = new KeyMapping(0x10); m['Q'] = new KeyMapping(0x10, true);
-            m['w'] = new KeyMapping(0x11); m['W'] = new KeyMapping(0x11, true);
-            m['e'] = new KeyMapping(0x12); m['E'] = new KeyMapping(0x12, true);
-            m['r'] = new KeyMapping(0x13); m['R'] = new KeyMapping(0x13, true);
-            m['t'] = new KeyMapping(0x14); m['T'] = new KeyMapping(0x14, true);
-            m['y'] = new KeyMapping(0x15); m['Y'] = new KeyMapping(0x15, true);
-            m['u'] = new KeyMapping(0x16); m['U'] = new KeyMapping(0x16, true);
-            m['i'] = new KeyMapping(0x17); m['I'] = new KeyMapping(0x17, true);
-            m['o'] = new KeyMapping(0x18); m['O'] = new KeyMapping(0x18, true);
-            m['p'] = new KeyMapping(0x19); m['P'] = new KeyMapping(0x19, true);
-            m['['] = new KeyMapping(0x1A); m['{'] = new KeyMapping(0x1A, true);
-            m[']'] = new KeyMapping(0x1B); m['}'] = new KeyMapping(0x1B, true);
-            m['\\'] = new KeyMapping(0x2B); m['|'] = new KeyMapping(0x2B, true);
-            // Row 3: asdfghjkl;'
-            m['a'] = new KeyMapping(0x1E); m['A'] = new KeyMapping(0x1E, true);
-            m['s'] = new KeyMapping(0x1F); m['S'] = new KeyMapping(0x1F, true);
-            m['d'] = new KeyMapping(0x20); m['D'] = new KeyMapping(0x20, true);
-            m['f'] = new KeyMapping(0x21); m['F'] = new KeyMapping(0x21, true);
-            m['g'] = new KeyMapping(0x22); m['G'] = new KeyMapping(0x22, true);
-            m['h'] = new KeyMapping(0x23); m['H'] = new KeyMapping(0x23, true);
-            m['j'] = new KeyMapping(0x24); m['J'] = new KeyMapping(0x24, true);
-            m['k'] = new KeyMapping(0x25); m['K'] = new KeyMapping(0x25, true);
-            m['l'] = new KeyMapping(0x26); m['L'] = new KeyMapping(0x26, true);
-            m[';'] = new KeyMapping(0x27); m[':'] = new KeyMapping(0x27, true);
-            m['\''] = new KeyMapping(0x28); m['"'] = new KeyMapping(0x28, true);
-            // Row 4: zxcvbnm,./
-            m['z'] = new KeyMapping(0x2C); m['Z'] = new KeyMapping(0x2C, true);
-            m['x'] = new KeyMapping(0x2D); m['X'] = new KeyMapping(0x2D, true);
-            m['c'] = new KeyMapping(0x2E); m['C'] = new KeyMapping(0x2E, true);
-            m['v'] = new KeyMapping(0x2F); m['V'] = new KeyMapping(0x2F, true);
-            m['b'] = new KeyMapping(0x30); m['B'] = new KeyMapping(0x30, true);
-            m['n'] = new KeyMapping(0x31); m['N'] = new KeyMapping(0x31, true);
-            m['m'] = new KeyMapping(0x32); m['M'] = new KeyMapping(0x32, true);
-            m[','] = new KeyMapping(0x33); m['<'] = new KeyMapping(0x33, true);
-            m['.'] = new KeyMapping(0x34); m['>'] = new KeyMapping(0x34, true);
-            m['/'] = new KeyMapping(0x35); m['?'] = new KeyMapping(0x35, true);
-            // Space, Tab, Enter
-            m[' '] = new KeyMapping(0x39);
-            m['\t'] = new KeyMapping(0x0F);
-            m['\r'] = new KeyMapping(0x1C);
-            m['\n'] = new KeyMapping(0x1C);
-            return m;
-        }
-
-        static bool TrySendWithEnglishUSTable(char c)
-        {
-            if (!_englishUS.TryGetValue(c, out KeyMapping km))
-                return false;
-
-            if (km.Shift)
-                SendScanCode(0x2A, false); // Left Shift down
-            SendScanCode(km.ScanCode, false);
-            SendScanCode(km.ScanCode, true);
-            if (km.Shift)
-                SendScanCode(0x2A, true); // Left Shift up
-            return true;
-        }
-
-        static void SendScanCode(ushort scanCode, bool keyUp)
-        {
-            INPUT[] inputs = new INPUT[1];
-            inputs[0].type = INPUT_KEYBOARD;
-            inputs[0].ki.wVk = 0;
-            inputs[0].ki.wScan = scanCode;
-            inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE | (keyUp ? KEYEVENTF_KEYUP : 0);
-            inputs[0].ki.time = 0;
-            inputs[0].ki.dwExtraInfo = IntPtr.Zero;
-            SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
-        }
-
-        public static Dictionary<string, string> GetAvailableKeyboardLayouts()
-        {
-            var result = new Dictionary<string, string>();
-            int count = (int)GetKeyboardLayoutList(0, null);
-            if (count > 0)
-            {
-                IntPtr[] layouts = new IntPtr[count];
-                GetKeyboardLayoutList(count, layouts);
-                foreach (var hkl in layouts)
-                {
-                    string layoutId = ((uint)hkl.ToInt32() & 0xFFFF).ToString("X4").PadLeft(8, '0');
-                    string name = GetLayoutDisplayName(layoutId);
-                    if (!result.ContainsKey(layoutId))
-                        result[layoutId] = name;
-                }
-            }
-            result["00000409"] = "English (US)";
-            result["00000809"] = "English (UK)";
-            result["0000040B"] = "Finnish";
-            result["00000407"] = "German";
-            result["0000040C"] = "French";
-            result["00000410"] = "Italian";
-            result["00000406"] = "Danish";
-            result["0000041D"] = "Swedish";
-            result["00000414"] = "Norwegian";
-            return result.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-        }
-
-        static string GetLayoutDisplayName(string layoutId)
-        {
-            try
-            {
-                int lcid = int.Parse(layoutId.Substring(4), NumberStyles.HexNumber);
-                var culture = CultureInfo.GetCultureInfo(lcid);
-                return culture.DisplayName;
-            }
-            catch
-            {
-                return layoutId;
-            }
-        }
-
         #region Windows 10/11 Dark Mode API
 
         [DllImport("dwmapi.dll")]
@@ -339,105 +170,30 @@ namespace ClickPaste
             SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
-        private static readonly Dictionary<char, (ushort scanCode, bool shift)> USKeyboardMap = new Dictionary<char, (ushort, bool)>
-        {
-            {'`', (0x29, false)}, {'~', (0x29, true)},
-            {'1', (0x02, false)}, {'!', (0x02, true)},
-            {'2', (0x03, false)}, {'@', (0x03, true)},
-            {'3', (0x04, false)}, {'#', (0x04, true)},
-            {'4', (0x05, false)}, {'$', (0x05, true)},
-            {'5', (0x06, false)}, {'%', (0x06, true)},
-            {'6', (0x07, false)}, {'^', (0x07, true)},
-            {'7', (0x08, false)}, {'&', (0x08, true)},
-            {'8', (0x09, false)}, {'*', (0x09, true)},
-            {'9', (0x0A, false)}, {'(', (0x0A, true)},
-            {'0', (0x0B, false)}, {')', (0x0B, true)},
-            {'-', (0x0C, false)}, {'_', (0x0C, true)},
-            {'=', (0x0D, false)}, {'+', (0x0D, true)},
-            {'q', (0x10, false)}, {'Q', (0x10, true)},
-            {'w', (0x11, false)}, {'W', (0x11, true)},
-            {'e', (0x12, false)}, {'E', (0x12, true)},
-            {'r', (0x13, false)}, {'R', (0x13, true)},
-            {'t', (0x14, false)}, {'T', (0x14, true)},
-            {'y', (0x15, false)}, {'Y', (0x15, true)},
-            {'u', (0x16, false)}, {'U', (0x16, true)},
-            {'i', (0x17, false)}, {'I', (0x17, true)},
-            {'o', (0x18, false)}, {'O', (0x18, true)},
-            {'p', (0x19, false)}, {'P', (0x19, true)},
-            {'[', (0x1A, false)}, {'{', (0x1A, true)},
-            {']', (0x1B, false)}, {'}', (0x1B, true)},
-            {'\\', (0x2B, false)}, {'|', (0x2B, true)},
-            {'a', (0x1E, false)}, {'A', (0x1E, true)},
-            {'s', (0x1F, false)}, {'S', (0x1F, true)},
-            {'d', (0x20, false)}, {'D', (0x20, true)},
-            {'f', (0x21, false)}, {'F', (0x21, true)},
-            {'g', (0x22, false)}, {'G', (0x22, true)},
-            {'h', (0x23, false)}, {'H', (0x23, true)},
-            {'j', (0x24, false)}, {'J', (0x24, true)},
-            {'k', (0x25, false)}, {'K', (0x25, true)},
-            {'l', (0x26, false)}, {'L', (0x26, true)},
-            {';', (0x27, false)}, {':', (0x27, true)},
-            {'\'', (0x28, false)}, {'"', (0x28, true)},
-            {'z', (0x2C, false)}, {'Z', (0x2C, true)},
-            {'x', (0x2D, false)}, {'X', (0x2D, true)},
-            {'c', (0x2E, false)}, {'C', (0x2E, true)},
-            {'v', (0x2F, false)}, {'V', (0x2F, true)},
-            {'b', (0x30, false)}, {'B', (0x30, true)},
-            {'n', (0x31, false)}, {'N', (0x31, true)},
-            {'m', (0x32, false)}, {'M', (0x32, true)},
-            {',', (0x33, false)}, {'<', (0x33, true)},
-            {'.', (0x34, false)}, {'>', (0x34, true)},
-            {'/', (0x35, false)}, {'?', (0x35, true)},
-            {' ', (0x39, false)},
-            {'\r', (0x1C, false)}, {'\n', (0x1C, false)},
-            {'\t', (0x0F, false)},
-        };
-
         public static void SendCharViaScanCode(char c)
         {
-            try
+            if (KeyboardTranslator.TrySendChar(c))
+                return;
+
+            KeyboardTranslator.Log($"Fallback path for '{c}' (0x{((int)c):X4})");
+            int count = (int)GetKeyboardLayoutList(0, null);
+            KeyboardTranslator.Log($"GetKeyboardLayoutList returned {count} layouts");
+            if (count > 0)
             {
-                Log($"SendCharViaScanCode: '{c}' (0x{((int)c):X4}), targetLayoutId='{_targetLayoutId}'");
-                
-                if (_targetLayoutId == "00000409" && USKeyboardMap.TryGetValue(c, out var mapping))
+                IntPtr[] layouts = new IntPtr[count];
+                GetKeyboardLayoutList(count, layouts);
+                foreach (var hkl in layouts)
                 {
-                    Log($"Using US scan code: 0x{mapping.scanCode:X2}, shift={mapping.shift}");
-                    if (mapping.shift) SendScanCode(0x2A, false);
-                    SendScanCode(mapping.scanCode, false);
-                    SendScanCode(mapping.scanCode, true);
-                    if (mapping.shift) SendScanCode(0x2A, true);
-                    return;
-                }
-                
-                if (!string.IsNullOrEmpty(_targetLayoutId))
-                {
-                    Log("Using SendUnicodeChar");
-                    SendUnicodeChar(c);
-                    return;
-                }
-
-                int count = (int)GetKeyboardLayoutList(0, null);
-                Log($"GetKeyboardLayoutList returned {count}");
-                if (count > 0)
-                {
-                    IntPtr[] layouts = new IntPtr[count];
-                    GetKeyboardLayoutList(count, layouts);
-
-                    foreach (var hkl in layouts)
+                    if (TrySendCharWithLayout(c, hkl))
                     {
-                        if (TrySendCharWithLayout(c, hkl))
-                            return;
+                        KeyboardTranslator.Log($"Sent via layout 0x{hkl.ToInt64():X8}");
+                        return;
                     }
                 }
+            }
 
-                Log("Falling back to ALT numpad");
-                SendCharViaAltNumpad(c);
-            }
-            catch (Exception ex)
-            {
-                Log($"ERROR in SendCharViaScanCode: {ex.Message}\n{ex.StackTrace}");
-                throw;
-            }
+            KeyboardTranslator.Log($"Falling back to ALT numpad for '{c}'");
+            SendCharViaAltNumpad(c);
         }
 
         static bool TrySendCharWithLayout(char c, IntPtr hkl)
@@ -467,7 +223,7 @@ namespace ClickPaste
             return true;
         }
 
-        private static void SendKeyWithScanCodeEx(byte vk, bool keyUp, IntPtr hkl)
+        static void SendKeyWithScanCodeEx(byte vk, bool keyUp, IntPtr hkl)
         {
             ushort scanCode = (ushort)MapVirtualKeyEx(vk, MAPVK_VK_TO_VSC, hkl);
 
@@ -604,9 +360,6 @@ namespace ClickPaste
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
         [DllImport("user32.dll")]
         public static extern int ActivateKeyboardLayout(int HKL, int flags);
-        private static uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
-        private static int HWND_BROADCAST = 0xffff;
-        private static uint KLF_ACTIVATE = 1;
 
         [DllImport("user32.dll")]
         public static extern void GetWindowText(IntPtr hWnd, StringBuilder lpString, Int32 nMaxCount);

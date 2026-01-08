@@ -339,6 +339,7 @@ namespace ClickPaste
             if(e.KeyCode == Keys.Escape)
             {
                 EndTrack();
+                StartHotKey();
             }
         }
 
@@ -356,14 +357,13 @@ namespace ClickPaste
 
         private void _notify_MouseDown(object sender, MouseEventArgs e)
         {
+            KeyboardTranslator.Log($"_notify_MouseDown: Button={e.Button}, settingsOpen={_settingsOpen}");
             switch(e.Button)
-
             {
-                //case MouseButtons.Middle:
-                case MouseButtons.Left: // this is a lie, we only get left after mouse released
-
+                case MouseButtons.Left:
                     if (!_settingsOpen)
                     {
+                        KeyboardTranslator.Log("Starting track mode");
                         StartTrack();
                     }                    
                     break;
@@ -371,10 +371,11 @@ namespace ClickPaste
         }
         private void _hook_MouseUp(object sender, MouseEventArgs e)
         {
+            KeyboardTranslator.Log($"_hook_MouseUp: Button={e.Button}");
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                //case MouseButtons.Middle:
+                    KeyboardTranslator.Log("Ending track, starting typing");
                     EndTrack();
                     StartTyping();
                     break;
@@ -404,7 +405,7 @@ namespace ClickPaste
                 System.Drawing.Icon originalIcon = null;
                 try
                 {
-                    Native.Log("Task.Run started");
+                    KeyboardTranslator.Log("Task.Run started");
                     if (string.IsNullOrEmpty(clip))
                     {
                         SystemSounds.Beep.Play();
@@ -422,10 +423,10 @@ namespace ClickPaste
                         var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
                         var targetLayout = Properties.Settings.Default.TargetKeyboardLayout;
                         
-                        Native.Log($"StartTyping: method={method}, targetLayout='{targetLayout}', clipLen={clip.Length}");
-                        Native.SetTargetKeyboardLayout(targetLayout);
+                        KeyboardTranslator.Log($"StartTyping: method={method}, targetLayout='{targetLayout}', clipLen={clip.Length}");
+                        KeyboardTranslator.SetTargetLayout(targetLayout);
                         IList<string> list = PrepareKeystrokes(clip, method);
-                        Native.Log($"PrepareKeystrokes returned {list.Count} items");
+                        KeyboardTranslator.Log($"PrepareKeystrokes returned {list.Count} items");
 
                         if (TypeMethod.AutoIt_Send == method)
                         {
@@ -458,7 +459,7 @@ namespace ClickPaste
                 }
                 catch (Exception ex)
                 {
-                    Native.Log($"EXCEPTION in typing task: {ex.Message}\n{ex.StackTrace}");
+                    KeyboardTranslator.Log($"EXCEPTION in typing task: {ex.Message}\n{ex.StackTrace}");
                 }
                 finally
                 {
