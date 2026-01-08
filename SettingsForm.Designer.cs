@@ -111,7 +111,7 @@
             this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.versionLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.versionLabel.Location = new System.Drawing.Point(12, 271);
+            this.versionLabel.Location = new System.Drawing.Point(12, 298);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(100, 15);
             this.versionLabel.TabIndex = 5;
@@ -270,7 +270,7 @@
             // 
             this.Done.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Done.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Done.Location = new System.Drawing.Point(159, 257);
+            this.Done.Location = new System.Drawing.Point(159, 284);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
             this.Done.TabIndex = 5;
@@ -285,14 +285,14 @@
             this.groupBox4.Controls.Add(this.confirmOver);
             this.groupBox4.Location = new System.Drawing.Point(12, 192);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(204, 50);
+            this.groupBox4.Size = new System.Drawing.Size(204, 75);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             // 
             // confirmOverActive
             // 
             this.confirmOverActive.AutoSize = true;
-            this.confirmOverActive.Location = new System.Drawing.Point(6, 0);
+            this.confirmOverActive.Location = new System.Drawing.Point(6, 19);
             this.confirmOverActive.Name = "confirmOverActive";
             this.confirmOverActive.Size = new System.Drawing.Size(159, 17);
             this.confirmOverActive.TabIndex = 1;
@@ -303,7 +303,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(59, 20);
+            this.label4.Location = new System.Drawing.Point(59, 45);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 6;
@@ -311,7 +311,7 @@
             // 
             // confirmOver
             // 
-            this.confirmOver.Location = new System.Drawing.Point(6, 17);
+            this.confirmOver.Location = new System.Drawing.Point(6, 42);
             this.confirmOver.Name = "confirmOver";
             this.confirmOver.Size = new System.Drawing.Size(47, 20);
             this.confirmOver.TabIndex = 2;
@@ -322,7 +322,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(392, 292);
+            this.ClientSize = new System.Drawing.Size(392, 319);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.groupBox3);

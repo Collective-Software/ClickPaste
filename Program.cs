@@ -193,10 +193,6 @@ namespace ClickPaste
         [STAThread]
         static void Main()
         {
-            if(Properties.Settings.Default.RunElevated)
-            {
-
-            }
             // only run one of these at a time!
             //https://stackoverflow.com/questions/502303/how-do-i-programmatically-get-the-guid-of-an-application-in-net2-0/502323#502323
             string assyGuid = Assembly.GetExecutingAssembly().GetCustomAttribute<GuidAttribute>().Value.ToUpper();
@@ -258,8 +254,6 @@ namespace ClickPaste
     {
         NotifyIcon _notify = null;
         IKeyboardMouseEvents _hook = null;
-        MenuItem[] _typeMethods; // these are just sequential 0-based integers so don't need to map them like...
-        Dictionary<int, MenuItem> _keyDelayMS;// we do here
         int? _usingHotKey;
         EventHandler<HotKeyEventArgs> _currentHotKeyHandler = null;
         CancellationTokenSource _stop = new CancellationTokenSource();
@@ -317,7 +311,14 @@ namespace ClickPaste
         private void HotKeyManager_EscapePressed(object sender, HotKeyEventArgs e)
         {
             StopHotKey();
-            _stop.Cancel();
+            lock (this)
+            {
+                _stop.Cancel();// stop running task
+            }
+            lock(this)
+            {
+                _stop = new CancellationTokenSource(); // new source for next time
+            }
         }
         void StartTrack()
         {
@@ -382,11 +383,21 @@ namespace ClickPaste
         }
         void StartTyping()
         {
-            var clip = Clipboard.GetText();
+            string clip;
+            try
+            {
+                clip = Clipboard.GetText();
+            }
+            catch (System.Runtime.InteropServices.ExternalException)
+            {
+                SystemSounds.Beep.Play();
+                StartHotKey();
+                return;
+            }
 
             // whatever window is under focus right now should be the target
 
-            if (Properties.Settings.Default.Confirm && clip.Length > Properties.Settings.Default.ConfirmOver)
+            if (Properties.Settings.Default.Confirm && clip != null && clip.Length > Properties.Settings.Default.ConfirmOver)
             {
                 SystemSounds.Beep.Play();
                 var w = Native.GetForegroundWindow();
@@ -398,7 +409,15 @@ namespace ClickPaste
                 }
                 Native.SetForegroundWindow(w);
             }
-            _stop = new CancellationTokenSource();
+            // capture cancel token and vars before running task in case they change
+            // this doesn't matter for _notify because we don't change it, but it's good practice
+            CancellationToken cancel;
+            NotifyIcon notify;
+            lock(this)
+            {
+                cancel = _stop.Token;
+                notify = _notify;
+            }
             Task.Run(() =>
             {
                 // check if it's my window
@@ -411,47 +430,56 @@ namespace ClickPaste
                 }
                 else
                 {
-                    var cancel = _stop.Token;
-                    var traySize = SystemInformation.SmallIconSize;
-                    var icon = _notify.Icon;
-                    _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
-                    int startDelayMS = Properties.Settings.Default.StartDelayMS;
-                    Thread.Sleep(100 + startDelayMS);
-                    StartHotKeyEscape();
-                    int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
-                    var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
-                    IList<string> list = PrepareKeystrokes(clip, method);
-
-                    if (TypeMethod.AutoIt_Send == method)
+                    var icon = notify.Icon;
+                    try
                     {
-                        AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
-                    }
-                    foreach (var s in list)
-                    {
-                        switch (method)
-                        {
+                        var traySize = SystemInformation.SmallIconSize;
+                        notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
+                        int startDelayMS = Properties.Settings.Default.StartDelayMS;
+                        Thread.Sleep(100 + startDelayMS);
+                        StartHotKeyEscape();
+                        int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
+                        var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
+                        IList<string> list = PrepareKeystrokes(clip, method);
 
-                            case TypeMethod.AutoIt_Send:
-                                AutoIt.AutoItX.Send(s, 1);
-                                break;
-                            case TypeMethod.Forms_SendKeys:
-                                SendKeys.SendWait(s);
-                                break;
-                            case TypeMethod.SendInput_ScanCode:
-                                // Send via scan codes with ALT code fallback - works with VM consoles
-                                foreach (char c in s)
-                                {
-                                    Native.SendCharViaScanCode(c);
-                                }
-                                break;
-                        }
-                        Thread.Sleep(keyDelayMS);
-                        if (cancel.IsCancellationRequested)
+                        if (TypeMethod.AutoIt_Send == method)
                         {
-                            break;//stop typing early
+                            AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
+                        }
+                        foreach (var s in list)
+                        {
+                            switch (method)
+                            {
+
+                                case TypeMethod.AutoIt_Send:
+                                    AutoIt.AutoItX.Send(s, 1);
+                                    break;
+                                case TypeMethod.Forms_SendKeys:
+                                    SendKeys.SendWait(s);
+                                    break;
+                                case TypeMethod.SendInput_ScanCode:
+                                    // Send via scan codes with ALT code fallback - works with VM consoles
+                                    foreach (char c in s)
+                                    {
+                                        Native.SendCharViaScanCode(c);
+                                    }
+                                    break;
+                            }
+                            Thread.Sleep(keyDelayMS);
+                            if (cancel.IsCancellationRequested)
+                            {
+                                break;//stop typing early
+                            }
                         }
                     }
-                    _notify.Icon = icon;
+                    catch(Exception)
+                    {
+                        SystemSounds.Beep.Play();
+                    }
+                    finally
+                    {
+                        notify.Icon = icon;
+                    }
                 }
                 StartHotKey();// resume normal hotkey listening
             });

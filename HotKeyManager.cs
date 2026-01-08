@@ -12,9 +12,16 @@ namespace ClickPaste
         public static int RegisterHotKey(Keys key, KeyModifiers modifiers)
         {
             _windowReadyEvent.WaitOne();
-            int id = System.Threading.Interlocked.Increment(ref _id);
-            _wnd.Invoke(new RegisterHotKeyDelegate(RegisterHotKeyInternal), _hwnd, id, (uint)modifiers, (uint)key);
-            return id;
+            lock (_windowReadyEvent)
+            {
+                int id = System.Threading.Interlocked.Increment(ref _id);
+                bool success = (bool)_wnd.Invoke(new RegisterHotKeyDelegate(RegisterHotKeyInternal), _hwnd, id, (uint)modifiers, (uint)key);
+                if (!success)
+                {
+                    throw new InvalidOperationException($"Failed to register hotkey. The hotkey may already be in use by another application.");
+                }
+                return id;
+            }
         }
 
         public static void UnregisterHotKey(int id)
@@ -22,12 +29,12 @@ namespace ClickPaste
             _wnd.Invoke(new UnRegisterHotKeyDelegate(UnRegisterHotKeyInternal), _hwnd, id);
         }
 
-        delegate void RegisterHotKeyDelegate(IntPtr hwnd, int id, uint modifiers, uint key);
+        delegate bool RegisterHotKeyDelegate(IntPtr hwnd, int id, uint modifiers, uint key);
         delegate void UnRegisterHotKeyDelegate(IntPtr hwnd, int id);
 
-        private static void RegisterHotKeyInternal(IntPtr hwnd, int id, uint modifiers, uint key)
+        private static bool RegisterHotKeyInternal(IntPtr hwnd, int id, uint modifiers, uint key)
         {
-            RegisterHotKey(hwnd, id, modifiers, key);
+            return RegisterHotKey(hwnd, id, modifiers, key);
         }
 
         private static void UnRegisterHotKeyInternal(IntPtr hwnd, int id)
@@ -62,9 +69,12 @@ namespace ClickPaste
         {
             public MessageWindow()
             {
-                _wnd = this;
-                _hwnd = this.Handle;
-                _windowReadyEvent.Set();
+                lock (_windowReadyEvent)
+                {
+                    _wnd = this;
+                    _hwnd = this.Handle;
+                    _windowReadyEvent.Set();
+                }
             }
 
             protected override void WndProc(ref Message m)
