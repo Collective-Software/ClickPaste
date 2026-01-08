@@ -1,4 +1,5 @@
 /obj
-/bin/Debug
-/bin/Release/*.pdb
+/bin/Debug/*
+/bin/Release/*
 /.vs
+bin/Release/AutoIt_License.html

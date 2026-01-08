@@ -339,6 +339,7 @@ namespace ClickPaste
             if(e.KeyCode == Keys.Escape)
             {
                 EndTrack();
+                StartHotKey();
             }
         }
 
@@ -356,14 +357,13 @@ namespace ClickPaste
 
         private void _notify_MouseDown(object sender, MouseEventArgs e)
         {
+            KeyboardTranslator.Log($"_notify_MouseDown: Button={e.Button}, settingsOpen={_settingsOpen}");
             switch(e.Button)
-
             {
-                //case MouseButtons.Middle:
-                case MouseButtons.Left: // this is a lie, we only get left after mouse released
-
+                case MouseButtons.Left:
                     if (!_settingsOpen)
                     {
+                        KeyboardTranslator.Log("Starting track mode");
                         StartTrack();
                     }                    
                     break;
@@ -371,10 +371,11 @@ namespace ClickPaste
         }
         private void _hook_MouseUp(object sender, MouseEventArgs e)
         {
+            KeyboardTranslator.Log($"_hook_MouseUp: Button={e.Button}");
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                //case MouseButtons.Middle:
+                    KeyboardTranslator.Log("Ending track, starting typing");
                     EndTrack();
                     StartTyping();
                     break;
@@ -401,59 +402,71 @@ namespace ClickPaste
             _stop = new CancellationTokenSource();
             Task.Run(() =>
             {
-                // check if it's my window
-                //IntPtr hwnd = Native.WindowFromPoint(e.X, e.Y);
-                // ... we don't have a window yet
-                if (string.IsNullOrEmpty(clip))
+                System.Drawing.Icon originalIcon = null;
+                try
                 {
-                    // nothing to paste
-                    SystemSounds.Beep.Play();
+                    KeyboardTranslator.Log("Task.Run started");
+                    if (string.IsNullOrEmpty(clip))
+                    {
+                        SystemSounds.Beep.Play();
+                    }
+                    else
+                    {
+                        var cancel = _stop.Token;
+                        var traySize = SystemInformation.SmallIconSize;
+                        originalIcon = _notify.Icon;
+                        _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
+                        int startDelayMS = Properties.Settings.Default.StartDelayMS;
+                        Thread.Sleep(100 + startDelayMS);
+                        StartHotKeyEscape();
+                        int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
+                        var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
+                        var targetLayout = Properties.Settings.Default.TargetKeyboardLayout;
+                        
+                        KeyboardTranslator.Log($"StartTyping: method={method}, targetLayout='{targetLayout}', clipLen={clip.Length}");
+                        KeyboardTranslator.SetTargetLayout(targetLayout);
+                        IList<string> list = PrepareKeystrokes(clip, method);
+                        KeyboardTranslator.Log($"PrepareKeystrokes returned {list.Count} items");
+
+                        if (TypeMethod.AutoIt_Send == method)
+                        {
+                            AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
+                        }
+                        foreach (var s in list)
+                        {
+                            switch (method)
+                            {
+                                case TypeMethod.AutoIt_Send:
+                                    AutoIt.AutoItX.Send(s, 1);
+                                    break;
+                                case TypeMethod.Forms_SendKeys:
+                                    SendKeys.SendWait(s);
+                                    break;
+                                case TypeMethod.SendInput_ScanCode:
+                                    foreach (char c in s)
+                                    {
+                                        Native.SendCharViaScanCode(c);
+                                    }
+                                    break;
+                            }
+                            Thread.Sleep(keyDelayMS);
+                            if (cancel.IsCancellationRequested)
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    var cancel = _stop.Token;
-                    var traySize = SystemInformation.SmallIconSize;
-                    var icon = _notify.Icon;
-                    _notify.Icon = new System.Drawing.Icon(Properties.Resources.Typing, traySize.Width, traySize.Height);
-                    int startDelayMS = Properties.Settings.Default.StartDelayMS;
-                    Thread.Sleep(100 + startDelayMS);
-                    StartHotKeyEscape();
-                    int keyDelayMS = Properties.Settings.Default.KeyDelayMS;
-                    var method = (TypeMethod)Properties.Settings.Default.TypeMethod;
-                    IList<string> list = PrepareKeystrokes(clip, method);
-
-                    if (TypeMethod.AutoIt_Send == method)
-                    {
-                        AutoIt.AutoItX.AutoItSetOption("SendKeyDelay", 0);
-                    }
-                    foreach (var s in list)
-                    {
-                        switch (method)
-                        {
-
-                            case TypeMethod.AutoIt_Send:
-                                AutoIt.AutoItX.Send(s, 1);
-                                break;
-                            case TypeMethod.Forms_SendKeys:
-                                SendKeys.SendWait(s);
-                                break;
-                            case TypeMethod.SendInput_ScanCode:
-                                // Send via scan codes with ALT code fallback - works with VM consoles
-                                foreach (char c in s)
-                                {
-                                    Native.SendCharViaScanCode(c);
-                                }
-                                break;
-                        }
-                        Thread.Sleep(keyDelayMS);
-                        if (cancel.IsCancellationRequested)
-                        {
-                            break;//stop typing early
-                        }
-                    }
-                    _notify.Icon = icon;
+                    KeyboardTranslator.Log($"EXCEPTION in typing task: {ex.Message}\n{ex.StackTrace}");
                 }
-                StartHotKey();// resume normal hotkey listening
+                finally
+                {
+                    if (originalIcon != null)
+                        _notify.Icon = originalIcon;
+                    StartHotKey();
+                }
             });
 
         }

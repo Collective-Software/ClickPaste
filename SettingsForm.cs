@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClickPaste
@@ -16,19 +11,17 @@ namespace ClickPaste
         RadioButton[] _methods;
         CheckBox[] _modifiers;
         RadioButton[] _hotKeyModes;
+        Dictionary<string, string> _layouts;
+
         public SettingsForm()
         {
             InitializeComponent();
 
-            // Apply theme (colors, icon, and dark titlebar)
             bool dark = ThemeHelper.IsDarkMode;
             ThemeHelper.ApplyTheme(this, dark);
             Native.SetDarkModeForWindow(this.Handle, dark);
-
-            // Set icon to match theme (light icon for dark mode, dark icon for light mode)
             this.Icon = dark ? Properties.Resources.Target : Properties.Resources.TargetDark;
 
-            // Set version label
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             versionLabel.Text = $"v{version.Major}.{version.Minor}.{version.Build}";
 
@@ -63,6 +56,22 @@ namespace ClickPaste
             {
                 mode.Checked = (Properties.Settings.Default.HotKeyMode == int.Parse(mode.Tag.ToString()));
             }
+
+            _layouts = new Dictionary<string, string>
+            {
+                { "00000409", "English (US)" }
+            };
+            targetLayoutCombo.Items.Add("(None - use local)");
+            foreach (var kv in _layouts)
+                targetLayoutCombo.Items.Add(kv.Value);
+            
+            string saved = Properties.Settings.Default.TargetKeyboardLayout;
+            if (string.IsNullOrEmpty(saved))
+                targetLayoutCombo.SelectedIndex = 0;
+            else if (_layouts.TryGetValue(saved, out string name))
+                targetLayoutCombo.SelectedItem = name;
+            else
+                targetLayoutCombo.SelectedIndex = 0;
         }
         private void HotKey_Letter_KeyDown(object sender, KeyEventArgs e)
         {
@@ -139,6 +148,22 @@ namespace ClickPaste
                     Properties.Settings.Default.HotKeyMode = int.Parse(mode.Tag.ToString()); ;
                 }
             }
+
+            string selectedLayout = "";
+            if (targetLayoutCombo.SelectedIndex > 0)
+            {
+                string selectedName = targetLayoutCombo.SelectedItem.ToString();
+                foreach (var kv in _layouts)
+                {
+                    if (kv.Value == selectedName)
+                    {
+                        selectedLayout = kv.Key;
+                        break;
+                    }
+                }
+            }
+            Properties.Settings.Default.TargetKeyboardLayout = selectedLayout;
+
             Properties.Settings.Default.Save();
         }
 

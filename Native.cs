@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ClickPaste
 {
@@ -99,6 +96,9 @@ namespace ClickPaste
         [DllImport("user32.dll")]
         public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKeyEx(uint uCode, uint uMapType, IntPtr dwhkl);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct KEYBDINPUT
         {
@@ -170,50 +170,72 @@ namespace ClickPaste
             SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
-        /// <summary>
-        /// Sends a character using scan codes by trying all installed keyboard layouts.
-        /// Falls back to ALT+numpad for unmappable characters.
-        /// </summary>
         public static void SendCharViaScanCode(char c)
         {
+            if (KeyboardTranslator.TrySendChar(c))
+                return;
+
+            KeyboardTranslator.Log($"Fallback path for '{c}' (0x{((int)c):X4})");
             int count = (int)GetKeyboardLayoutList(0, null);
+            KeyboardTranslator.Log($"GetKeyboardLayoutList returned {count} layouts");
             if (count > 0)
             {
                 IntPtr[] layouts = new IntPtr[count];
                 GetKeyboardLayoutList(count, layouts);
-
                 foreach (var hkl in layouts)
                 {
-                    short vkResult = VkKeyScanEx(c, hkl);
-
-                    // Check if mappable (not -1 in both bytes)
-                    if (!((vkResult & 0xFF) == 0xFF && ((vkResult >> 8) & 0xFF) == 0xFF))
+                    if (TrySendCharWithLayout(c, hkl))
                     {
-                        byte vk = (byte)(vkResult & 0xFF);
-                        byte shiftState = (byte)((vkResult >> 8) & 0xFF);
-
-                        bool needShift = (shiftState & 1) != 0;
-                        bool needCtrl = (shiftState & 2) != 0;
-                        bool needAlt = (shiftState & 4) != 0;
-
-                        if (needShift) SendKeyWithScanCode(VK_LSHIFT, false);
-                        if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, false);
-                        if (needAlt) SendKeyWithScanCode((byte)VK_MENU, false);
-
-                        SendKeyWithScanCode(vk, false);
-                        SendKeyWithScanCode(vk, true);
-
-                        if (needAlt) SendKeyWithScanCode((byte)VK_MENU, true);
-                        if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, true);
-                        if (needShift) SendKeyWithScanCode(VK_LSHIFT, true);
-
+                        KeyboardTranslator.Log($"Sent via layout 0x{hkl.ToInt64():X8}");
                         return;
                     }
                 }
             }
 
-            // Fallback to ALT codes for unmappable characters (works in VM consoles)
+            KeyboardTranslator.Log($"Falling back to ALT numpad for '{c}'");
             SendCharViaAltNumpad(c);
+        }
+
+        static bool TrySendCharWithLayout(char c, IntPtr hkl)
+        {
+            short vkResult = VkKeyScanEx(c, hkl);
+            if ((vkResult & 0xFF) == 0xFF && ((vkResult >> 8) & 0xFF) == 0xFF)
+                return false;
+
+            byte vk = (byte)(vkResult & 0xFF);
+            byte shiftState = (byte)((vkResult >> 8) & 0xFF);
+
+            bool needShift = (shiftState & 1) != 0;
+            bool needCtrl = (shiftState & 2) != 0;
+            bool needAlt = (shiftState & 4) != 0;
+
+            if (needShift) SendKeyWithScanCodeEx(VK_LSHIFT, false, hkl);
+            if (needCtrl) SendKeyWithScanCodeEx(VK_LCONTROL, false, hkl);
+            if (needAlt) SendKeyWithScanCodeEx((byte)VK_MENU, false, hkl);
+
+            SendKeyWithScanCodeEx(vk, false, hkl);
+            SendKeyWithScanCodeEx(vk, true, hkl);
+
+            if (needAlt) SendKeyWithScanCodeEx((byte)VK_MENU, true, hkl);
+            if (needCtrl) SendKeyWithScanCodeEx(VK_LCONTROL, true, hkl);
+            if (needShift) SendKeyWithScanCodeEx(VK_LSHIFT, true, hkl);
+
+            return true;
+        }
+
+        static void SendKeyWithScanCodeEx(byte vk, bool keyUp, IntPtr hkl)
+        {
+            ushort scanCode = (ushort)MapVirtualKeyEx(vk, MAPVK_VK_TO_VSC, hkl);
+
+            INPUT[] inputs = new INPUT[1];
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].ki.wVk = 0;
+            inputs[0].ki.wScan = scanCode;
+            inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE | (keyUp ? KEYEVENTF_KEYUP : 0);
+            inputs[0].ki.time = 0;
+            inputs[0].ki.dwExtraInfo = IntPtr.Zero;
+
+            SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
         /// <summary>
@@ -338,9 +360,6 @@ namespace ClickPaste
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
         [DllImport("user32.dll")]
         public static extern int ActivateKeyboardLayout(int HKL, int flags);
-        private static uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
-        private static int HWND_BROADCAST = 0xffff;
-        private static uint KLF_ACTIVATE = 1;
 
         [DllImport("user32.dll")]
         public static extern void GetWindowText(IntPtr hWnd, StringBuilder lpString, Int32 nMaxCount);
