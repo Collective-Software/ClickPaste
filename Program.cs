@@ -340,6 +340,7 @@ namespace ClickPaste
             if(e.KeyCode == Keys.Escape)
             {
                 EndTrack();
+                StartHotKey();
             }
         }
 
