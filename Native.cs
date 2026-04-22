@@ -72,6 +72,7 @@ namespace ClickPaste
         #region SendInput Unicode Support (for international keyboards and Unicode characters)
 
         public const int INPUT_KEYBOARD = 1;
+        public const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
         public const uint KEYEVENTF_KEYUP = 0x0002;
         public const uint KEYEVENTF_UNICODE = 0x0004;
         public const uint KEYEVENTF_SCANCODE = 0x0008;
@@ -82,6 +83,7 @@ namespace ClickPaste
         // Virtual key codes for modifiers and numpad
         public const byte VK_LSHIFT = 0xA0;
         public const byte VK_LCONTROL = 0xA2;
+        public const byte VK_RMENU = 0xA5;
         public const byte VK_NUMPAD0 = 0x60;
         public const byte VK_NUMPAD1 = 0x61;
         public const byte VK_NUMPAD2 = 0x62;
@@ -154,16 +156,22 @@ namespace ClickPaste
         /// <summary>
         /// Sends a key press/release using virtual key code AND scan code.
         /// This works with browser-based VM consoles that need scan codes.
+        /// Set extended=true for keys that require the extended-key flag,
+        /// notably RightAlt (AltGr), RightCtrl, arrows, Insert/Delete, etc.
         /// </summary>
-        private static void SendKeyWithScanCode(byte vk, bool keyUp)
+        private static void SendKeyWithScanCode(byte vk, bool keyUp, bool extended = false)
         {
             ushort scanCode = (ushort)MapVirtualKey(vk, MAPVK_VK_TO_VSC);
+
+            uint flags = 0;
+            if (keyUp) flags |= KEYEVENTF_KEYUP;
+            if (extended) flags |= KEYEVENTF_EXTENDEDKEY;
 
             INPUT[] inputs = new INPUT[1];
             inputs[0].type = INPUT_KEYBOARD;
             inputs[0].ki.wVk = vk;
             inputs[0].ki.wScan = scanCode;
-            inputs[0].ki.dwFlags = keyUp ? KEYEVENTF_KEYUP : 0;
+            inputs[0].ki.dwFlags = flags;
             inputs[0].ki.time = 0;
             inputs[0].ki.dwExtraInfo = IntPtr.Zero;
 
@@ -171,49 +179,94 @@ namespace ClickPaste
         }
 
         /// <summary>
-        /// Sends a character using scan codes by trying all installed keyboard layouts.
-        /// Falls back to ALT+numpad for unmappable characters.
+        /// Sends a character using scan codes for the target window's currently
+        /// active keyboard layout. Correctly handles AltGr (via RMENU + extended
+        /// flag, no explicit LCtrl). Falls back through other installed layouts
+        /// and finally KEYEVENTF_UNICODE for chars the active layout cannot
+        /// produce directly.
         /// </summary>
         public static void SendCharViaScanCode(char c)
         {
-            int count = (int)GetKeyboardLayoutList(0, null);
-            if (count > 0)
+            // Prefer the foreground window's active layout — that's what the
+            // target interprets our VK codes through.
+            IntPtr hkl = GetKeyboardLayout(
+                GetWindowThreadProcessId(GetForegroundWindow(), IntPtr.Zero));
+
+            short vkResult = VkKeyScanEx(c, hkl);
+
+            // If the active layout can't map this char, try the other installed
+            // layouts. Remote console apps (VMware, RDP) may have a different
+            // layout loaded on their UI thread than the system default, leaving
+            // e.g. umlauts unmappable via the foreground HKL.
+            if ((vkResult & 0xFF) == 0xFF && ((vkResult >> 8) & 0xFF) == 0xFF)
             {
-                IntPtr[] layouts = new IntPtr[count];
-                GetKeyboardLayoutList(count, layouts);
-
-                foreach (var hkl in layouts)
+                int count = (int)GetKeyboardLayoutList(0, null);
+                if (count > 0)
                 {
-                    short vkResult = VkKeyScanEx(c, hkl);
-
-                    // Check if mappable (not -1 in both bytes)
-                    if (!((vkResult & 0xFF) == 0xFF && ((vkResult >> 8) & 0xFF) == 0xFF))
+                    IntPtr[] layouts = new IntPtr[count];
+                    GetKeyboardLayoutList(count, layouts);
+                    foreach (var altHkl in layouts)
                     {
-                        byte vk = (byte)(vkResult & 0xFF);
-                        byte shiftState = (byte)((vkResult >> 8) & 0xFF);
-
-                        bool needShift = (shiftState & 1) != 0;
-                        bool needCtrl = (shiftState & 2) != 0;
-                        bool needAlt = (shiftState & 4) != 0;
-
-                        if (needShift) SendKeyWithScanCode(VK_LSHIFT, false);
-                        if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, false);
-                        if (needAlt) SendKeyWithScanCode((byte)VK_MENU, false);
-
-                        SendKeyWithScanCode(vk, false);
-                        SendKeyWithScanCode(vk, true);
-
-                        if (needAlt) SendKeyWithScanCode((byte)VK_MENU, true);
-                        if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, true);
-                        if (needShift) SendKeyWithScanCode(VK_LSHIFT, true);
-
-                        return;
+                        if (altHkl == hkl) continue;
+                        short alt = VkKeyScanEx(c, altHkl);
+                        if (!((alt & 0xFF) == 0xFF && ((alt >> 8) & 0xFF) == 0xFF))
+                        {
+                            vkResult = alt;
+                            hkl = altHkl;
+                            goto Mapped;
+                        }
                     }
                 }
+
+                // No installed layout can produce this character. Skip the
+                // ALT+numpad path (doesn't work in Linux/Mac VM guests) and go
+                // straight to Unicode injection.
+                SendUnicodeChar(c);
+                return;
             }
 
-            // Fallback to ALT codes for unmappable characters (works in VM consoles)
-            SendCharViaAltNumpad(c);
+        Mapped:
+            byte vk = (byte)(vkResult & 0xFF);
+            byte shiftState = (byte)((vkResult >> 8) & 0xFF);
+
+            bool needShift = (shiftState & 1) != 0;
+            bool needCtrl = (shiftState & 2) != 0;
+            bool needAlt = (shiftState & 4) != 0;
+            bool isAltGr = needCtrl && needAlt;
+
+            if (needShift) SendKeyWithScanCode(VK_LSHIFT, false);
+            if (isAltGr)
+            {
+                // For AltGr we send ONLY RAlt with the extended flag — NOT
+                // LCtrl+RAlt. Physical AltGr presses do produce an LCtrl event
+                // but it's flagged as "injected by keyboard" so apps treat it
+                // as an AltGr modifier, not a real Ctrl press. A synthetic
+                // LCtrl from SendInput has no such marker — apps then see Ctrl
+                // held down and either swallow the combo as a shortcut or
+                // reinterpret the character. RAlt+Extended alone is the
+                // standard trick (used by AutoHotkey, xdotool etc.) that apps
+                // and VM consoles reliably recognize as AltGr.
+                SendKeyWithScanCode(VK_RMENU, false, extended: true);
+            }
+            else
+            {
+                if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, false);
+                if (needAlt) SendKeyWithScanCode(VK_RMENU, false, extended: true);
+            }
+
+            SendKeyWithScanCode(vk, false);
+            SendKeyWithScanCode(vk, true);
+
+            if (isAltGr)
+            {
+                SendKeyWithScanCode(VK_RMENU, true, extended: true);
+            }
+            else
+            {
+                if (needAlt) SendKeyWithScanCode(VK_RMENU, true, extended: true);
+                if (needCtrl) SendKeyWithScanCode(VK_LCONTROL, true);
+            }
+            if (needShift) SendKeyWithScanCode(VK_LSHIFT, true);
         }
 
         /// <summary>
