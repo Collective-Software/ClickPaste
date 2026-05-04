@@ -1,0 +1,89 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Fragment>
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="bannrbmp_493.58.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="dlgbmp_493.312.bmp" />
+
+    
+    <UI Id="WixUI_Custom">
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Description" FaceName="Tahoma" Size="8" Red="255" Blue="255" Green="255" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" Red="255" Blue="255" Green="255" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+      <DialogRef Id="FeaturesDlg" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+
+
+      <?define dlg = "Welcome"?>
+      <?define nextctrl = "Next"?>
+      <?define cnd = "NOT Installed"?>
+      <?define next = "LicenseAgreement"?>
+      <?include UI_Next.wxi?>
+
+      <?define cnd = "Installed AND PATCH"?>
+      <?define next = "VerifyReady"?>
+      <?include UI_Next.wxi?>
+
+      <?define dlg = "LicenseAgreement"?>
+      <?include UI_Back.wxi?>
+
+      <?define cnd = "LicenseAccepted = "1""?>
+      <?define next = "Features"?>
+      <?include UI_Next.wxi?>
+
+      <?define cnd = "1"?>
+      <?define next = "Features"?>
+      <?include UI_Next.wxi?>
+
+      <?define dlg = "Features"?>
+      <?include UI_Back.wxi?>
+
+      <?define dlg = "VerifyReady"?>
+      <?include UI_Back.wxi?>
+
+      <?define dlg = "MaintenanceWelcome"?>
+      <?define cnd = "1"?>
+      <?define next = "MaintenanceType"?>
+      <?include UI_Next.wxi?>
+
+
+      <?define dlg = "MaintenanceType"?>
+      <?include UI_Back.wxi?>
+
+      <?define nextctrl = "ChangeButton"?>
+      <?define cnd = "1"?>
+      <?define next = "Features"?>
+      <?include UI_Next.wxi?>
+
+      <?define nextctrl = "RepairButton"?>
+      <?define cnd = "1"?>
+      <?define next = "VerifyReady"?>
+      <?include UI_Next.wxi?>
+
+      <?define nextctrl = "RemoveButton"?>
+      <?define cnd = "1"?>
+      <?define next = "VerifyReady"?>
+      <?include UI_Next.wxi?>
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed"/>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999" />
+    </UI>
+
+    <UIRef Id="WixUI_Common" />
+    
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch !(bind.Property.ProductName) now" />
+    <Property Id="WixShellExecTarget" Value="[#ClickPaste.exe]" />
+    <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)" DllEntry="WixShellExec" Impersonate="yes" />
+
+  </Fragment>
+</Wix>

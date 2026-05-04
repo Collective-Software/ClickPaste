@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+  
+  <String Id="DowngradeErrorMessage" Value="A newer version of !(bind.Property.ProductName) is already installed."/>
+  
+  <String Id="WelcomeDlgTitle"            Value="{\WixUI_Font_Bigger}Welcome to the !(bind.Property.ProductName) !(bind.fileVersion.ClickPaste.exe) Setup Wizard" />
+  <String Id="MaintenanceWelcomeDlgTitle" Value="{\WixUI_Font_Bigger}Welcome to the !(bind.Property.ProductName) !(bind.fileVersion.ClickPaste.exe) Setup Wizard" />
+
+  <String Id="MainFeatureTitle" Value="!(bind.Property.ProductName)"/>
+  <String Id="MainFeatureDescription" Value="Select which optional features to install"/>
+  
+  <String Id="ShortcutFeatureTitle" Value="Start Menu entry"/>
+  <String Id="ShortcutFeatureDescription" Value="Make !(bind.Property.ProductName) accessible as an icon from the Start menu"/>
+  
+  <String Id="StartupFeatureTitle" Value="Run at logon"/>
+  <String Id="StartupFeatureDescription" Value="Start !(bind.Property.ProductName) when a user logs on to Windows"/>
+
+</WixLocalization>

@@ -1,0 +1,4 @@
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Publish Dialog="$(var.dlg)Dlg" Control="$(var.nextctrl)" Property="$(var.next)Dlg_Back" Value="$(var.dlg)Dlg" Order="1" Condition="$(var.cnd)" />
+  <Publish Dialog="$(var.dlg)Dlg" Control="$(var.nextctrl)" Event="NewDialog" Value="$(var.next)Dlg" Order="2" Condition="$(var.cnd)" />
+</Include>

@@ -3,8 +3,10 @@ Windows 10/11 notification area app in C# that can paste clipboard contents as k
 
 ## Starting
 
-* Launch ClickPaste.exe, or put it in your Startup folder.
-* (Running as UAC administrator is _no longer needed_ in order to access UAC-elevated processes, because from v1.4.3 onward we set "UIAccess=true" in the application manifest.)
+* You can install ClickPaste using the MSI installer or get the portable ZIP from the [Releases page](../../releases/latest)
+* Note that in order to paste to UAC-elevated processes, Microsoft requires the ClickPaste binary to be run from the system drive's "Program Files" folder. 
+(The easiest way to achieve that is to use the MSI installer.)
+* Launch ClickPaste from a shortcut or by double-clicking ClickPaste.exe.
 
 ## Usage
 

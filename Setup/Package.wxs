@@ -1,0 +1,65 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Id="CollectiveSoftware.ClickPaste_installer" Name="ClickPaste" Manufacturer="Collective Software" Language="1033" 
+           UpgradeCode="{9717164F-7F5C-4F28-B289-59BD60627FA3}"
+           Version="!(bind.fileVersion.ClickPaste.exe)">
+    
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
+    
+    <Property Id="INSTALLLEVEL" Value="1" />
+    
+    <Feature Id="Main" Title="!(loc.MainFeatureTitle)" Description="!(loc.MainFeatureDescription)" Level="1" Display="expand" AllowAbsent="no">
+      <Component Id="Files" Directory="INSTALLFOLDER" Guid="{664B747C-5457-4981-B429-EE816E125EE6}">
+        <?define FileNames = "AutoIt_License.html;AutoItX3.Assembly.dll;AutoItX3.Assembly.xml;AutoItX3.dll;AutoItX3_x64.dll;ClickPaste.exe;ClickPaste.exe.config;Gma.System.MouseKeyHook.dll"?>
+        <?foreach FILE in $(var.FileNames)?>
+          <File Id="$(var.FILE)" Source="$(var.ClickPaste.TargetDir)\$(var.FILE)" />
+        <?endforeach?>
+      </Component>
+      
+      <Feature Id="Shortcut" AllowAdvertise="no" Title="!(loc.ShortcutFeatureTitle)" Description="!(loc.ShortcutFeatureDescription)" Level="1">
+        <ComponentRef Id="Shortcut"/>
+      </Feature>
+      
+      <Feature Id="Startup" AllowAdvertise="no" Title="!(loc.StartupFeatureTitle)" Description="!(loc.StartupFeatureDescription)" Level="1">
+        <ComponentRef Id="Startup"/>
+      </Feature>
+    </Feature>
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="MANUFACTURERFOLDER" Name="!(bind.Property.Manufacturer)">
+        <Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Name="Microsoft">
+        <Directory Name="Windows">
+          <Directory Name="Start Menu">
+            <Directory Name="Programs">
+              
+              <Directory Id="ApplicationProgramsFolder" Name="!(bind.Property.Manufacturer)">
+                <Component Id="Shortcut" Guid="{070355B6-3BEF-4031-A9D0-6CA39C1228FF}">
+                  <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+                  <RegistryValue Root="HKLM" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)\Settings" Name="Shortcut" Type="integer" Value="1" KeyPath="yes" />
+                  <Shortcut Id="ClickPasteShortcut" Name="!(bind.Property.ProductName)" Target="[INSTALLFOLDER]ClickPaste.exe" WorkingDirectory="INSTALLFOLDER" />
+                </Component>
+              </Directory>
+              
+              <Directory Name="Startup">
+                <Component Id="Startup" Guid="{7566C782-0EC2-4F0D-8810-B3DD6709E200}">
+                  <RegistryValue Root="HKLM" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)\Settings" Name="Startup" Type="integer" Value="1" KeyPath="yes" />
+                  <Shortcut Id="ClickPasteStartup" Name="!(bind.Property.ProductName)" Target="[INSTALLFOLDER]ClickPaste.exe" WorkingDirectory="INSTALLFOLDER" />
+                </Component>              
+              </Directory>
+              
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <UIRef Id="WixUI_Custom" />
+
+  </Package>
+  <Fragment>
+  </Fragment>
+</Wix>

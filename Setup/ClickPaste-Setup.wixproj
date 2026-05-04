@@ -1,0 +1,21 @@
+﻿<Project Sdk="WixToolset.Sdk/7.0.0">
+  <PropertyGroup>
+    <AcceptEula>wix7</AcceptEula>
+    <SuppressSpecificWarnings>1118</SuppressSpecificWarnings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="UI_Back.wxi" />
+    <Content Include="UI_Next.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FireGiant.HeatWave.BuildTools.wixext" Version="7.0.0" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="7.0.0" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClickPaste.csproj"  />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call $(SolutionDir)\sign.bat $(TargetPath)" />
+  </Target>
+</Project>
