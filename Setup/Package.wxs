@@ -2,6 +2,7 @@
   <Package Id="CollectiveSoftware.ClickPaste_installer" Name="ClickPaste" Manufacturer="Collective Software" Language="1033" 
            UpgradeCode="{9717164F-7F5C-4F28-B289-59BD60627FA3}"
            Version="!(bind.fileVersion.ClickPaste.exe)">
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
     
     <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
     
