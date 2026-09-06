@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Method_Unicode = new System.Windows.Forms.RadioButton();
             this.Method_ScanCode = new System.Windows.Forms.RadioButton();
             this.Method_AutoIt = new System.Windows.Forms.RadioButton();
             this.Method_Forms = new System.Windows.Forms.RadioButton();
@@ -61,31 +62,43 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.Method_Unicode);
             this.groupBox1.Controls.Add(this.Method_ScanCode);
             this.groupBox1.Controls.Add(this.Method_AutoIt);
             this.groupBox1.Controls.Add(this.Method_Forms);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(204, 89);
+            this.groupBox1.Size = new System.Drawing.Size(204, 112);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Typing Method:";
+            //
+            // Method_Unicode
+            //
+            this.Method_Unicode.AutoSize = true;
+            this.Method_Unicode.Location = new System.Drawing.Point(6, 19);
+            this.Method_Unicode.Name = "Method_Unicode";
+            this.Method_Unicode.Size = new System.Drawing.Size(143, 17);
+            this.Method_Unicode.TabIndex = 1;
+            this.Method_Unicode.Tag = "4";
+            this.Method_Unicode.Text = "Unicode (mixed / RDP)";
+            this.Method_Unicode.UseVisualStyleBackColor = true;
             // 
             // Method_ScanCode
             // 
             this.Method_ScanCode.AutoSize = true;
-            this.Method_ScanCode.Location = new System.Drawing.Point(6, 65);
+            this.Method_ScanCode.Location = new System.Drawing.Point(6, 88);
             this.Method_ScanCode.Name = "Method_ScanCode";
             this.Method_ScanCode.Size = new System.Drawing.Size(74, 17);
             this.Method_ScanCode.TabIndex = 4;
             this.Method_ScanCode.Tag = "3";
-            this.Method_ScanCode.Text = "SendInput";
+            this.Method_ScanCode.Text = "SendInput (scan codes)";
             this.Method_ScanCode.UseVisualStyleBackColor = true;
             // 
             // Method_AutoIt
             // 
             this.Method_AutoIt.AutoSize = true;
-            this.Method_AutoIt.Location = new System.Drawing.Point(6, 42);
+            this.Method_AutoIt.Location = new System.Drawing.Point(6, 65);
             this.Method_AutoIt.Name = "Method_AutoIt";
             this.Method_AutoIt.Size = new System.Drawing.Size(81, 17);
             this.Method_AutoIt.TabIndex = 2;
@@ -97,7 +110,7 @@
             // Method_Forms
             // 
             this.Method_Forms.AutoSize = true;
-            this.Method_Forms.Location = new System.Drawing.Point(6, 19);
+            this.Method_Forms.Location = new System.Drawing.Point(6, 42);
             this.Method_Forms.Name = "Method_Forms";
             this.Method_Forms.Size = new System.Drawing.Size(104, 17);
             this.Method_Forms.TabIndex = 1;
@@ -111,9 +124,9 @@
             this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.versionLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.versionLabel.Location = new System.Drawing.Point(12, 298);
+            this.versionLabel.Location = new System.Drawing.Point(12, 321);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(100, 15);
+            this.versionLabel.Size = new System.Drawing.Size(190, 15);
             this.versionLabel.TabIndex = 5;
             this.versionLabel.Text = "v0.0.0";
             this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -124,7 +137,7 @@
             this.groupBox2.Controls.Add(this.startDelayMS);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.DelayMS);
-            this.groupBox2.Location = new System.Drawing.Point(12, 107);
+            this.groupBox2.Location = new System.Drawing.Point(12, 130);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(204, 79);
             this.groupBox2.TabIndex = 2;
@@ -270,7 +283,7 @@
             // 
             this.Done.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Done.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Done.Location = new System.Drawing.Point(159, 284);
+            this.Done.Location = new System.Drawing.Point(159, 307);
             this.Done.Name = "Done";
             this.Done.Size = new System.Drawing.Size(75, 23);
             this.Done.TabIndex = 5;
@@ -283,7 +296,7 @@
             this.groupBox4.Controls.Add(this.confirmOverActive);
             this.groupBox4.Controls.Add(this.label4);
             this.groupBox4.Controls.Add(this.confirmOver);
-            this.groupBox4.Location = new System.Drawing.Point(12, 192);
+            this.groupBox4.Location = new System.Drawing.Point(12, 215);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(204, 75);
             this.groupBox4.TabIndex = 3;
@@ -322,7 +335,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(392, 319);
+            this.ClientSize = new System.Drawing.Size(392, 342);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.groupBox3);
@@ -374,6 +387,7 @@
         private System.Windows.Forms.RadioButton hotKeyModeType;
         private System.Windows.Forms.RadioButton hotKeyModeTarget;
         private System.Windows.Forms.RadioButton Method_ScanCode;
+        private System.Windows.Forms.RadioButton Method_Unicode;
         private System.Windows.Forms.Label versionLabel;
     }
 }

@@ -29,6 +29,7 @@ First of course, you need to have some text in your clipboard.  Then:
 Right-click the notification icon and select Settings.
 
 * You can change between key typing modes,
+  including a layout-independent Unicode mode for mixed-language text over RDP,
 * Set how much delay there is before and between keystrokes, 
 * Trigger a confirmation when the clipboard contains more than a chosen number of characters,
 * Configure what "hot key" combination will be used (Clear the key textbox with delete or backspace if you wish to have *no* hotkey),

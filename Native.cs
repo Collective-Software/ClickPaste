@@ -84,6 +84,9 @@ namespace ClickPaste
         public const byte VK_LSHIFT = 0xA0;
         public const byte VK_LCONTROL = 0xA2;
         public const byte VK_RMENU = 0xA5;
+        public const byte VK_BACK = 0x08;
+        public const byte VK_TAB = 0x09;
+        public const byte VK_RETURN = 0x0D;
         public const byte VK_NUMPAD0 = 0x60;
         public const byte VK_NUMPAD1 = 0x61;
         public const byte VK_NUMPAD2 = 0x62;
@@ -151,6 +154,44 @@ namespace ClickPaste
             inputs[1].ki.dwExtraInfo = IntPtr.Zero;
 
             SendInput(2, inputs, inputSize);
+        }
+
+        /// <summary>
+        /// Sends layout-independent text. Printable characters use Unicode packets;
+        /// controls that represent physical keys are emitted as key presses.
+        /// </summary>
+        public static void SendCharViaUnicode(char c)
+        {
+            switch (c)
+            {
+                case '\r':
+                case '\n':
+                    SendKeyPress(VK_RETURN);
+                    break;
+                case '\t':
+                    SendKeyPress(VK_TAB);
+                    break;
+                case '\b':
+                    SendKeyPress(VK_BACK);
+                    break;
+                default:
+                    SendUnicodeChar(c);
+                    break;
+            }
+        }
+
+        private static void SendKeyPress(byte vk)
+        {
+            INPUT[] inputs = new INPUT[2];
+
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].ki.wVk = vk;
+
+            inputs[1].type = INPUT_KEYBOARD;
+            inputs[1].ki.wVk = vk;
+            inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
+
+            SendInput(2, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
         /// <summary>

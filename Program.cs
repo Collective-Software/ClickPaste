@@ -243,7 +243,8 @@ namespace ClickPaste
     {
         Forms_SendKeys = 0,
         AutoIt_Send = 1,
-        SendInput_ScanCode = 3  // Scan codes with ALT code fallback - works everywhere including VM consoles
+        SendInput_ScanCode = 3,  // Scan codes with ALT code fallback - works everywhere including VM consoles
+        SendInput_Unicode = 4   // Layout-independent text for RDP and mixed languages
     }
     public enum HotKeyMode
     {
@@ -463,6 +464,12 @@ namespace ClickPaste
                                     foreach (char c in s)
                                     {
                                         Native.SendCharViaScanCode(c);
+                                    }
+                                    break;
+                                case TypeMethod.SendInput_Unicode:
+                                    foreach (char c in s)
+                                    {
+                                        Native.SendCharViaUnicode(c);
                                     }
                                     break;
                             }
