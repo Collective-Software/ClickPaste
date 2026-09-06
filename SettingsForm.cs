@@ -32,10 +32,11 @@ namespace ClickPaste
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             versionLabel.Text = $"v{version.Major}.{version.Minor}.{version.Build}";
 
-            _methods = new RadioButton[3];
-            _methods[0] = Method_Forms;
-            _methods[1] = Method_AutoIt;
-            _methods[2] = Method_ScanCode;
+            _methods = new RadioButton[4];
+            _methods[0] = Method_Unicode;
+            _methods[1] = Method_Forms;
+            _methods[2] = Method_AutoIt;
+            _methods[3] = Method_ScanCode;
             _modifiers = new CheckBox[4];
             _modifiers[0] = HotKey_Alt;
             _modifiers[1] = HotKey_Control;
